@@ -1,3 +1,3 @@
-POST INSTALL FOR FEDORA 40
+<h1>POST INSTALL FOR FEDORA 40+</h1>
 
-Will be updated after every new Fedora version released.
+<p>Will be updated after every version update of Fedora Workstation - GNOME Edition.</p>
