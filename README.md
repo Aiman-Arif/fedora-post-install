@@ -6,7 +6,9 @@ POST INSTALL FOR FEDORA 40+
 > [!IMPORTANT]
 > Run the command below to run this script.
 >
-> `bash -c "$(curl https://raw.githubusercontent.com/Aiman217/fedora-gnome-post-install/master/setup.sh)"`
+> ```
+> bash -c "$(curl https://raw.githubusercontent.com/Aiman217/fedora-gnome-post-install/master/setup.sh)"
+> ```
 
 ***Option provided in the script:***
 1. Improve DNF Speed by updating conf file
