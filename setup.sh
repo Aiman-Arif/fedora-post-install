@@ -25,13 +25,13 @@ custom_commands=(
   # Improve DNF Speed by updating conf file
   "imp_dnf"
   # Adding RPM Fusion
-  "sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm; sudo dnf groupupdate core; sudo dnf upgrade --refresh"
+  "sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm; sudo dnf groupupdate -y core; sudo dnf upgrade --refresh"
   # Updating firmware
   "sudo fwupdmgr get-devices; sudo fwupdmgr refresh --force; sudo fwupdmgr get-updates; sudo fwupdmgr update"
   # Removing bloatware
   "sudo dnf remove -y gnome-boxes gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt firefox"
   # Installing media codecs
-  "sudo dnf groupupdate 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync; sudo dnf swap 'ffmpeg-free' 'ffmpeg' --allowerasing; sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg; sudo dnf install -y lame\* --exclude=lame-devel; sudo dnf group upgrade -y --with-optional Multimedia"
+  "sudo dnf groupupdate -y 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync; sudo dnf swap -y 'ffmpeg-free' 'ffmpeg' --allowerasing; sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg; sudo dnf install -y lame\* --exclude=lame-devel; sudo dnf group upgrade -y --with-optional Multimedia"
   # Installing Hoyoverse repo
   "flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo"
   # Installing commonly used apps
@@ -79,7 +79,7 @@ func_proc () {
   done
 
   sudo dnf upgrade --refresh
-  sudo dnf autoremove
+  sudo dnf autoremove -y
 
   echo -e "${BLUE}It is recommended to reboot${WHITE}"
   read -p "Press y to continue: " reboot_now
