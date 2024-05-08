@@ -25,7 +25,7 @@ custom_commands=(
   # Improve DNF Speed by updating conf file
   "imp_dnf"
   # Adding RPM Fusion
-  "sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm; sudo dnf groupupdate core; sudo dnf update; sudo dnf upgrade --refresh"
+  "sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm; sudo dnf groupupdate core; sudo dnf upgrade --refresh"
   # Updating firmware
   "sudo fwupdmgr get-devices; sudo fwupdmgr refresh --force; sudo fwupdmgr get-updates; sudo fwupdmgr update"
   # Removing bloatware
@@ -84,7 +84,7 @@ func_proc () {
   echo -e "${BLUE}It is recommended to reboot${WHITE}"
   read -p "Press y to continue: " reboot_now
 
-  if [ $reboot_now == "y" ];
+  if [ "$reboot_now" == "y" ];
   then
     reboot
   fi
