@@ -29,10 +29,9 @@ custom_commands=(
   # Updating firmware
   "sudo fwupdmgr get-devices; sudo fwupdmgr refresh --force; sudo fwupdmgr get-updates; sudo fwupdmgr update"
   # Removing bloatware
-  "sudo dnf remove -y gnome-boxes gnome-contacts gnome-logs gnome-terminal gnome-tour mediawriter gnome-abrt firefox"
+  "sudo dnf remove -y gnome-boxes gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt firefox"
   # Installing media codecs
-  "sudo dnf groupupdate 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync
-  sudo dnf swap 'ffmpeg-free' 'ffmpeg' --allowerasing; sudo dnf install gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg; sudo dnf install lame\* --exclude=lame-devel; sudo dnf group upgrade --with-optional Multimedia"
+  "sudo dnf groupupdate 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync; sudo dnf swap 'ffmpeg-free' 'ffmpeg' --allowerasing; sudo dnf install gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg; sudo dnf install lame\* --exclude=lame-devel; sudo dnf group upgrade --with-optional Multimedia"
   # Installing Hoyoverse repo
   "flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo"
   # Installing commonly used apps
@@ -58,6 +57,7 @@ func_proc () {
 
   # Prompt user to select commands
   read -p "Enter the numbers of the commands to run (separated by spaces), or 'all' to run all commands: " selected_indices
+  selected_indices=${selected_indices:-all}
 
   # Check if 'all' was selected
   if [ "$selected_indices" == "all" ]; then
