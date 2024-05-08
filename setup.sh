@@ -11,9 +11,19 @@ custom_ops=(
   "Installing commonly used apps"
 )
 
+imp_dnf () {
+  cd
+  cd /etc/dnf
+  sudo sed -i '$a fastestmirror=1' dnf.conf
+  sudo sed -i '$a max_parallel_downloads=10' dnf.conf
+  sudo sed -i '$a deltarpm=True' dnf.conf
+  sudo sed -i '$a defaultyes=True' dnf.conf
+  cd
+}
+
 custom_commands=(
   # Improve DNF Speed by updating conf file
-  "cd; cd /etc/dnf; sudo sed -i '$a fastestmirror=1' dnf.conf; sudo sed -i '$a max_parallel_downloads=10' dnf.conf; sudo sed -i '$a deltarpm=True' dnf.conf; sudo sed -i '$a defaultyes=True' dnf.conf; cd"
+  "imp_dnf"
   # Adding RPM Fusion
   "sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm; sudo dnf groupupdate core; sudo dnf update; sudo dnf upgrade --refresh"
   # Updating firmware
