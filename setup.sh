@@ -61,7 +61,7 @@ func_proc () {
 
   # Check if 'all' was selected
   if [ "$selected_indices" == "all" ]; then
-    selected_indices=$(seq 1 ${#custom_ops[@]})
+    selected_indices=$(seq -s ' ' 1 ${#custom_ops[@]})
   fi
 
   # Convert selected indices to array
@@ -83,6 +83,7 @@ func_proc () {
 
   echo -e "${BLUE}It is recommended to reboot${WHITE}"
   read -p "Press y to continue: " reboot_now
+  reboot_now=${reboot_now:-y}
 
   if [ "$reboot_now" == "y" ];
   then
