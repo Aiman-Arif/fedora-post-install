@@ -1,7 +1,7 @@
-POST INSTALL FOR FEDORA 40+
+POST INSTALL SCRIPT FOR FEDORA 40+
 ===========================
 > [!NOTE] 
-> Will be updated after every version update of Fedora Workstation - GNOME Edition.
+> Will be updated after every version update of Fedora Workstation.
 
 > [!IMPORTANT]
 > Run the command below to run this script.
@@ -17,7 +17,9 @@ POST INSTALL FOR FEDORA 40+
 1. Improve DNF Speed by updating conf file
 2. Adding RPM Fusion
 3. Updating firmware
-4. Removing bloatware
-5. Installing media codecs
-6. Installing Hoyoverse repo
-7. Installing commonly used apps
+4. Installing media codecs
+5. Enabling H/W video acceleration
+6. Installing commonly used apps
+7. Installing personal apps for Aiman
+8. Removing bloatware
+9. Installing themes (Colloid gtk, Papirus icon, Bibata cursor)
