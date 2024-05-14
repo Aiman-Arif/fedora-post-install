@@ -34,7 +34,8 @@ personal_apps () {
     dnf check-update
     # Installing personal apps
     sudo dnf install -y conky-manager2 gnome-shell-extension-pop-shell xprop unzip p7zip p7zip-plugins unrar code
-    flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.realmazharhussain.GdmSettings io.github.shiftey.Desktop moe.launcher.the-honkers-railway-launcher
+    flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.realmazharhussain.GdmSettings io.github.shiftey.Desktop
+    flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
 setup_theme () {
