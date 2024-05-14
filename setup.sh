@@ -27,7 +27,7 @@ personal_apps () {
     # Installing Hoyoverse repo
     flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
     # Installing conky manager repo
-    sudo dnf copr enable geraldosimiao/conky-manager2
+    sudo dnf copr enable -y geraldosimiao/conky-manager2
     # Installing VSCode repo
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
@@ -41,7 +41,7 @@ setup_theme () {
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    sudo dnf install gnome-themes-extra gtk-murrine-engine sassc
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
     cd
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
@@ -51,8 +51,8 @@ setup_theme () {
     cd .themes
     sudo cp -r ./. /usr/share/themes
     cd
-    sudo dnf copr enable peterwu/rendezvous
-    sudo dnf install bibata-cursor-themes
+    sudo dnf copr enable -y peterwu/rendezvous
+    sudo dnf install -y bibata-cursor-themes
     wget -qO- https://git.io/papirus-icon-theme-install | sh
 }
 
@@ -79,7 +79,7 @@ custom_commands=(
     # Installing media codecs
     "sudo dnf groupupdate -y 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync; sudo dnf swap -y 'ffmpeg-free' 'ffmpeg' --allowerasing; sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg; sudo dnf install -y lame\* --exclude=lame-devel; sudo dnf group upgrade -y --with-optional Multimedia"
     # Enabling H/W video acceleration
-    "sudo dnf install ffmpeg ffmpeg-libs libva libva-utils; sudo dnf config-manager --set-enabled fedora-cisco-openh264; sudo dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264"
+    "sudo dnf install -y ffmpeg ffmpeg-libs libva libva-utils; sudo dnf config-manager --set-enabled fedora-cisco-openh264; sudo dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264"
     # Installing commonly used apps
     "sudo dnf install -y fastfetch timeshift gnome-console gnome-tweaks vlc; flatpak install -y com.mattjakeman.ExtensionManager ca.desrt.dconf-editor net.nokyan.Resources"
     # Installing personal apps for Aiman
