@@ -5,10 +5,10 @@ custom_ops=(
   "Improve DNF Speed by updating conf file"
   "Adding RPM Fusion"
   "Updating firmware"
-  "Removing bloatware"
   "Installing media codecs"
   "Installing Hoyoverse repo"
   "Installing commonly used apps"
+  "Removing bloatware"
 )
 
 imp_dnf () {
@@ -28,14 +28,14 @@ custom_commands=(
   "sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm; sudo dnf groupupdate -y core; sudo dnf upgrade -y --refresh"
   # Updating firmware
   "sudo fwupdmgr get-devices; sudo fwupdmgr refresh --force; sudo fwupdmgr get-updates; sudo fwupdmgr update"
-  # Removing bloatware
-  "sudo dnf remove -y gnome-boxes gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal firefox"
   # Installing media codecs
   "sudo dnf groupupdate -y 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync; sudo dnf swap -y 'ffmpeg-free' 'ffmpeg' --allowerasing; sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg; sudo dnf install -y lame\* --exclude=lame-devel; sudo dnf group upgrade -y --with-optional Multimedia"
   # Installing Hoyoverse repo
   "flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo"
   # Installing commonly used apps
   "sudo dnf install -y gnome-console gnome-tweaks gnome-shell-extension-pop-shell xprop unzip p7zip p7zip-plugins unrar; flatpak install -y one.ablaze.floorp io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor"
+  # Removing bloatware
+  "sudo dnf remove -y gnome-boxes gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal firefox"
 )
 
 # Define your function
