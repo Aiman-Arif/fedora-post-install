@@ -25,13 +25,13 @@ imp_dnf () {
 
 personal_apps () {
     # Installing Hoyoverse repo
-    "flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo"
+    flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
     # Installing conky manager repo
-    "sudo dnf copr enable geraldosimiao/conky-manager2"
+    sudo dnf copr enable geraldosimiao/conky-manager2
     # Installing VSCode repo
-    "sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc; echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null; dnf check-update"
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc; echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null; dnf check-update
     # Installing personal apps
-    "sudo dnf install -y conky-manager2 gnome-shell-extension-pop-shell xprop unzip p7zip p7zip-plugins unrar code; flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.realmazharhussain.GdmSettings io.github.shiftey.Desktop moe.launcher.the-honkers-railway-launcher"
+    sudo dnf install -y conky-manager2 gnome-shell-extension-pop-shell xprop unzip p7zip p7zip-plugins unrar code; flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.realmazharhussain.GdmSettings io.github.shiftey.Desktop moe.launcher.the-honkers-railway-launcher
 }
 
 setup_theme () {
