@@ -2,7 +2,7 @@
 
 # Define colors
 BLUE='\033[0;34m'
-WHITE='\033[0;37m'
+WHITE='\033[0m'
 RED='\033[0;31m'
 
 # Define user DE
@@ -146,6 +146,14 @@ func_proc () {
         custom_commands[7]="sudo dnf remove pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     fi
 
+    # Remove specific functions from custom_commands array if KDE is selected
+    if [ "$user_select_de" == "KDE" ]; then
+        # Removing the setup_theme function
+        unset 'custom_ops[8]'
+        unset 'custom_commands[8]'  
+        # Add more unset statements as needed for other functions
+    fi
+
     echo -e "${RED}\nYou will be running ${user_select_de} specific modification!${WHITE}"
     echo -e "${RED}Please close the script if the option is wrong!\n${WHITE}"
 
@@ -163,6 +171,8 @@ func_proc () {
     if [ "$selected_indices" == "all" ]; then
         selected_indices=$(seq -s ' ' 1 ${#custom_ops[@]})
     fi
+
+    echo -e "Your selected options: ${RED}${selected_indices}${WHITE}"
 
     # Convert selected indices to array
     IFS=' ' read -ra indices <<< "$selected_indices"
