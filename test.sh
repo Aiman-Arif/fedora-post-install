@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Rewrite for setup script
-
- # Define colors
+# Define colors
 BLUE='\033[0;34m'
 WHITE='\033[0;37m'
 RED='\033[0;31m'
@@ -13,32 +11,76 @@ user_de=(
     "KDE"
 )
 
+# Function to improve DNF speed by updating the configuration file
 imp_dnf () {
-    cd
     cd /etc/dnf
     sudo sed -i '$a fastestmirror=1' dnf.conf
     sudo sed -i '$a max_parallel_downloads=10' dnf.conf
     sudo sed -i '$a deltarpm=True' dnf.conf
     sudo sed -i '$a defaultyes=True' dnf.conf
-    cd
 }
 
+# Function to add RPM Fusion repositories and update the system
+add_rpm_fusion () {
+    sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    sudo dnf groupupdate -y core
+    sudo dnf upgrade -y --refresh
+}
+
+# Function to update firmware
+update_firmware () {
+    sudo fwupdmgr get-devices
+    sudo fwupdmgr refresh --force
+    sudo fwupdmgr get-updates
+    sudo fwupdmgr update
+}
+
+# Function to install media codecs
+install_media_codecs () {
+    sudo dnf groupupdate -y "core" "multimedia" "sound-and-video" --setopt="install_weak_deps=False" --exclude="PackageKit-gstreamer-plugin" --allowerasing
+    sudo dnf swap -y "ffmpeg-free" "ffmpeg" --allowerasing
+    sudo dnf install -y gstreamer1-plugins-{bad-*,good-*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg
+    sudo dnf install -y lame* --exclude=lame-devel
+    sudo dnf group upgrade -y --with-optional Multimedia
+}
+
+# Function to enable hardware video acceleration
+enable_hw_video_acceleration () {
+    sudo dnf install -y ffmpeg ffmpeg-libs libva libva-utils
+    sudo dnf config-manager --set-enabled fedora-cisco-openh264
+    sudo dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264
+}
+
+# Function to install commonly used applications
+install_commonly_used_apps () {
+    sudo dnf install -y fastfetch timeshift gnome-console gnome-tweaks vlc
+    flatpak install -y com.mattjakeman.ExtensionManager ca.desrt.dconf-editor net.nokyan.Resources
+}
+
+# Function to install personal applications for Aiman
 personal_apps () {
-    # Installing Hoyoverse repo
-    "flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo"
-    # Installing conky manager repo
-    "sudo dnf copr enable geraldosimiao/conky-manager2"
-    # Installing VSCode repo
-    "sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc; echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null; dnf check-update"
-    # Installing personal apps
-    "sudo dnf install -y conky-manager2 gnome-shell-extension-pop-shell xprop unzip p7zip p7zip-plugins unrar code; flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.realmazharhussain.GdmSettings io.github.shiftey.Desktop moe.launcher.the-honkers-railway-launcher"
+    flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
+    sudo dnf copr enable -y geraldosimiao/conky-manager2
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
+    dnf check-update
+    sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
+    sudo dnf install -y conky-manager2 gnome-shell-extension-pop-shell xprop unzip p7zip p7zip-plugins unrar code
+    flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.realmazharhussain.GdmSettings io.github.shiftey.Desktop
+    flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
+# Function to remove bloatware
+remove_bloatware () {
+    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal gnome-system-monitor gnome-extensions-app firefox totem
+}
+
+# Function to install themes
 setup_theme () {
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    sudo dnf install gnome-themes-extra gtk-murrine-engine sassc
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
     cd
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
@@ -48,8 +90,8 @@ setup_theme () {
     cd .themes
     sudo cp -r ./. /usr/share/themes
     cd
-    sudo dnf copr enable peterwu/rendezvous
-    sudo dnf install bibata-cursor-themes
+    sudo dnf copr enable -y peterwu/rendezvous
+    sudo dnf install -y bibata-cursor-themes
     wget -qO- https://git.io/papirus-icon-theme-install | sh
 }
 
@@ -66,24 +108,16 @@ custom_ops=(
     "Installing themes"
 )
 
+# Define custom commands as function names
 custom_commands=(
-    # Improve DNF Speed by updating conf file
     "imp_dnf"
-    # Adding RPM Fusion
-    "sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm; sudo dnf groupupdate -y core; sudo dnf upgrade -y --refresh"
-    # Updating firmware
-    "sudo fwupdmgr get-devices; sudo fwupdmgr refresh --force; sudo fwupdmgr get-updates; sudo fwupdmgr update"
-    # Installing media codecs
-    "sudo dnf groupupdate -y 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync; sudo dnf swap -y 'ffmpeg-free' 'ffmpeg' --allowerasing; sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg; sudo dnf install -y lame\* --exclude=lame-devel; sudo dnf group upgrade -y --with-optional Multimedia"
-    # Enabling H/W video acceleration
-    "sudo dnf install ffmpeg ffmpeg-libs libva libva-utils; sudo dnf config-manager --set-enabled fedora-cisco-openh264; sudo dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264"
-    # Installing commonly used apps
-    "sudo dnf install -y fastfetch timeshift gnome-console gnome-tweaks vlc; flatpak install -y com.mattjakeman.ExtensionManager ca.desrt.dconf-editor net.nokyan.Resources"
-    # Installing personal apps for Aiman
+    "add_rpm_fusion"
+    "update_firmware"
+    "install_media_codecs"
+    "enable_hw_video_acceleration"
+    "install_commonly_used_apps"
     "personal_apps"
-    # Removing bloatware
-    "sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal gnome-system-monitor gnome-extensions-app firefox totem"
-    # Installing themes
+    "remove_bloatware"
     "setup_theme"
 )
 
