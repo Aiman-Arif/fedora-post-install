@@ -60,13 +60,12 @@ install_commonly_used_apps () {
 # Function to install personal applications for Aiman
 personal_apps () {
     flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
-    sudo dnf copr enable -y geraldosimiao/conky-manager2
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
     dnf check-update
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
-    sudo dnf install -y conky-manager2 gnome-shell-extension-pop-shell xprop unzip p7zip p7zip-plugins unrar code
-    flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.realmazharhussain.GdmSettings io.github.shiftey.Desktop
+    sudo dnf install -y unzip p7zip p7zip-plugins unrar code
+    flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.shiftey.Desktop
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
@@ -80,7 +79,9 @@ setup_theme () {
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
+    sudo dnf copr enable -y geraldosimiao/conky-manager2
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop
+    flatpak install -y io.github.realmazharhussain.GdmSettings
     cd
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
@@ -143,7 +144,10 @@ func_proc () {
     else
         user_select_de="KDE"
         # Change index if required
-        custom_commands[7]="sudo dnf remove pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        # Installing commonly used apps
+        custom_commands[5]="sudo dnf install -y fastfetch timeshift vlc; flatpak install -y net.nokyan.Resources"
+        # Removing bloatware
+        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     fi
 
     # Remove specific functions from custom_commands array if KDE is selected
