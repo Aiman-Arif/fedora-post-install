@@ -152,8 +152,8 @@ zenity_dialogs () {
     # Add "Select All" option to custom_ops
     custom_ops=("Select All" "${custom_ops[@]}")
 
-    # Select commands to run using Zenity
-    selected_indices=$(zenity --list --multiple --title="Select Commands to Run" --column="Commands" "${custom_ops[@]}" --height=400 --width=600)
+    # Select commands to run using Zenity with multi-select option
+    selected_indices=$(zenity --list --title="Select Commands to Run: Multi Select using Ctrl + Alt" --column="Commands" "${custom_ops[@]}" --multiple --height=400 --width=600)
 
     if [ -z "$selected_indices" ]; then
         zenity --error --text="No commands selected. Exiting."
