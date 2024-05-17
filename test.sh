@@ -1,23 +1,25 @@
 #!/bin/bash
 
-# Define colors
-BLUE='\033[0;34m'
-WHITE='\033[0m'
-RED='\033[0;31m'
-
-# Define user DE
-user_de=(
-    "GNOME"
-    "KDE"
-)
+# Function to check if Zenity is installed
+check_zenity() {
+    if ! command -v zenity &> /dev/null; then
+        zenity_missing=$(zenity --question --text="Zenity is not installed. Would you like to install it now?" --ok-label="Yes" --cancel-label="No")
+        if [ $? -eq 0 ]; then
+            sudo dnf install -y zenity
+        else
+            echo "Zenity is required to run this script. Exiting."
+            exit 1
+        fi
+    fi
+}
 
 # Function to improve DNF speed by updating the configuration file
 imp_dnf () {
     cd /etc/dnf
-    sudo sed -i '$a fastestmirror=1' dnf.conf
-    sudo sed -i '$a max_parallel_downloads=10' dnf.conf
-    sudo sed -i '$a deltarpm=True' dnf.conf
-    sudo sed -i '$a defaultyes=True' dnf.conf
+    sudo grep -qxF 'fastestmirror=1' dnf.conf || sudo sed -i '$a fastestmirror=1' dnf.conf
+    sudo grep -qxF 'max_parallel_downloads=10' dnf.conf || sudo sed -i '$a max_parallel_downloads=10' dnf.conf
+    sudo grep -qxF 'deltarpm=True' dnf.conf || sudo sed -i '$a deltarpm=True' dnf.conf
+    sudo grep -qxF 'defaultyes=True' dnf.conf || sudo sed -i '$a defaultyes=True' dnf.conf
 }
 
 # Function to add RPM Fusion repositories and update the system
@@ -122,87 +124,74 @@ custom_commands=(
     "setup_theme"
 )
 
-# Define your function
-func_proc () {
-    # Extract custom text and commands from function arguments
-    local user_de=("${!1}") # Indirect reference to array variable
-    local custom_ops=("${!2}")  # Indirect reference to array variable
-    local custom_commands=("${!3}")  # Indirect reference to array variable
+# Define user DE
+user_de=("GNOME" "KDE")
 
-    # Print available DE
-    echo "Available DE:"
-    for ((i = 0; i < ${#user_de[@]}; i++)); do
-        echo "$((i+1)). ${user_de[i]}"
-    done
+# Function to handle Zenity dialogs
+zenity_dialogs () {
+    local user_de=("${!1}")
+    local custom_ops=("${!2}")
+    local custom_commands=("${!3}")
 
-    # Prompt user to select commands
-    read -p "Select your Desktop Environment (enter the number only): " select_de
-    select_de=${select_de:-1}
+    # Select DE using Zenity
+    user_select_de=$(zenity --list --title="Select Your Desktop Environment" --column="DE" "${user_de[@]}" --height=200 --width=300)
 
-    if [ "$select_de" == "1" ]; then
-        user_select_de="GNOME"
-    else
-        user_select_de="KDE"
-        # Change index if required
+    # Modify commands for KDE
+    if [ "$user_select_de" == "KDE" ]; then
         # Installing commonly used apps
         custom_commands[5]="sudo dnf install -y fastfetch timeshift vlc; flatpak install -y net.nokyan.Resources"
         # Removing bloatware
         custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
-    fi
-
-    # Remove specific functions from custom_commands array if KDE is selected
-    if [ "$user_select_de" == "KDE" ]; then
-        # Removing the setup_theme function
+        # Removing the setup_theme function for KDE
         unset 'custom_ops[8]'
         unset 'custom_commands[8]'  
-        # Add more unset statements as needed for other functions
     fi
 
-    echo -e "${RED}\nYou will be running ${user_select_de} specific modification!${WHITE}"
-    echo -e "${RED}Please close the script if the option is wrong!\n${WHITE}"
+    zenity --info --text="You will be running ${user_select_de} specific modification! Please close the script if the option is wrong!"
 
-    # Print available commands
-    echo "Available commands:"
-    for ((i = 0; i < ${#custom_ops[@]}; i++)); do
-        echo "$((i+1)). ${custom_ops[i]}"
-    done
+    # Add "Select All" option to custom_ops
+    custom_ops=("Select All" "${custom_ops[@]}")
 
-    # Prompt user to select commands
-    read -p "Enter the numbers of the commands to run (separated by spaces), or 'all' to run all commands: " selected_indices
-    selected_indices=${selected_indices:-all}
+    # Select commands to run using Zenity
+    selected_indices=$(zenity --list --multiple --title="Select Commands to Run" --column="Commands" "${custom_ops[@]}" --height=400 --width=600)
 
-    # Check if 'all' was selected
-    if [ "$selected_indices" == "all" ]; then
-        selected_indices=$(seq -s ' ' 1 ${#custom_ops[@]})
+    if [ -z "$selected_indices" ]; then
+        zenity --error --text="No commands selected. Exiting."
+        exit 1
     fi
 
-    echo -e "Your selected options: ${RED}${selected_indices}${WHITE}"
+    # Convert selected options to indices
+    IFS='|' read -ra indices <<< "$selected_indices"
 
-    # Convert selected indices to array
-    IFS=' ' read -ra indices <<< "$selected_indices"
+    # Check if "Select All" was chosen
+    if [[ " ${indices[@]} " =~ " Select All " ]]; then
+        indices=("${custom_ops[@]:1}")  # Select all options excluding "Select All"
+    fi
+
+    # Show selected options in an info message
+    zenity --info --text="Your selected options: ${indices[*]}"
 
     # Execute selected commands
-    for index in "${indices[@]}"; do
-        if [[ $index =~ ^[0-9]+$ && $index -ge 1 && $index -le ${#custom_ops[@]} ]]; then
-            echo -e "\n${BLUE}${custom_ops[index-1]} ${WHITE}"
-            eval "${custom_commands[index-1]}"
-            echo -e "${RED}Process Completed!${WHITE}\n"
-        else
-            echo "\nInvalid selection: $index\n"
-        fi
+    for selected_option in "${indices[@]}"; do
+        for ((i = 1; i < ${#custom_ops[@]}; i++)); do
+            if [ "${custom_ops[i]}" == "$selected_option" ]; then
+                echo -e "\nExecuting: ${custom_ops[i]}"
+                eval "${custom_commands[i-1]}"  # Adjust index for command
+                echo -e "Process Completed!\n"
+            fi
+        done
     done
 
     sudo dnf upgrade -y --refresh
     sudo dnf autoremove -y
 
-    echo -e "${BLUE}It is recommended to reboot${WHITE}"
-    read -p "Press y to continue: " reboot_now
-    reboot_now=${reboot_now:-y}
-
-    if [ "$reboot_now" == "y" ]; then
+    zenity --question --text="It is recommended to reboot. Reboot now?" --ok-label="Yes" --cancel-label="No"
+    if [ $? -eq 0 ]; then
         reboot
     fi
 }
 
-# Call the function with arrays of custom text and multi-line commands
-func_proc user_de[@] custom_ops[@] custom_commands[@]
+# Call the zenity check function
+check_zenity
+# Call the Zenity dialog function with arrays of custom text and multi-line commands
+zenity_dialogs user_de[@] custom_ops[@] custom_commands[@]
