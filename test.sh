@@ -3,13 +3,9 @@
 # Function to check if Zenity is installed
 check_zenity() {
     if ! command -v zenity &> /dev/null; then
-        zenity_missing=$(zenity --question --text="Zenity is not installed. Would you like to install it now?" --ok-label="Yes" --cancel-label="No")
-        if [ $? -eq 0 ]; then
-            sudo dnf install -y zenity
-        else
-            echo "Zenity is required to run this script. Exiting."
-            exit 1
-        fi
+        echo -e "\nExecuting: Installing zenity"
+        sudo dnf install -y zenity
+        echo -e "Process Completed!\n"
     fi
 }
 
