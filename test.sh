@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Function to check if the distribution is Fedora
+check_distribution() {
+    if [ -f /etc/os-release ]; then
+        source /etc/os-release
+        if [[ "${ID}" != "fedora" ]]; then
+            echo "Error: This script is intended for Fedora Linux. Detected distribution: ${ID}"
+            exit 1
+        fi
+    else
+        echo "Error: /etc/os-release not found. Cannot determine distribution."
+        exit 1
+    fi
+}
+
 # Function to check if Zenity is installed
 check_zenity() {
     if ! command -v zenity &> /dev/null; then
@@ -132,6 +146,11 @@ zenity_dialogs () {
     # Select DE using Zenity
     user_select_de=$(zenity --list --title="Select Your Desktop Environment" --column="DE" "${user_de[@]}" --height=200 --width=300)
 
+    if [ -z "$user_select_de" ]; then
+        zenity --error --text="No commands selected. Exiting."
+        exit 1
+    fi
+
     # Modify commands for KDE
     if [ "$user_select_de" == "KDE" ]; then
         # Installing commonly used apps
@@ -187,6 +206,8 @@ zenity_dialogs () {
     fi
 }
 
+# Call the check distribution function
+check_distribution
 # Call the zenity check function
 check_zenity
 # Call the Zenity dialog function with arrays of custom text and multi-line commands
