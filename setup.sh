@@ -1,49 +1,99 @@
 #!/bin/bash
 
-# Rewrite for setup script
-
- # Define colors
-BLUE='\033[0;34m'
-WHITE='\033[0;37m'
-RED='\033[0;31m'
-
-# Define user DE
-user_de=(
-    "GNOME"
-    "KDE"
-)
-
-imp_dnf () {
-    cd
-    cd /etc/dnf
-    sudo sed -i '$a fastestmirror=1' dnf.conf
-    sudo sed -i '$a max_parallel_downloads=10' dnf.conf
-    sudo sed -i '$a deltarpm=True' dnf.conf
-    sudo sed -i '$a defaultyes=True' dnf.conf
-    cd
+# Function to check if the distribution is Fedora
+check_distribution() {
+    if [ -f /etc/os-release ]; then
+        source /etc/os-release
+        if [[ "${ID}" != "fedora" ]]; then
+            echo "Error: This script is intended for Fedora Linux. Detected distribution: ${ID}"
+            exit 1
+        fi
+    else
+        echo "Error: /etc/os-release not found. Cannot determine distribution."
+        exit 1
+    fi
 }
 
+# Function to check if Zenity is installed
+check_zenity() {
+    if ! command -v zenity &> /dev/null; then
+        echo -e "\nExecuting: Installing zenity"
+        sudo dnf install -y zenity
+        echo -e "Process Completed!\n"
+    fi
+}
+
+# Function to improve DNF speed by updating the configuration file
+imp_dnf () {
+    cd /etc/dnf
+    sudo grep -qxF 'fastestmirror=1' dnf.conf || sudo sed -i '$a fastestmirror=1' dnf.conf
+    sudo grep -qxF 'max_parallel_downloads=10' dnf.conf || sudo sed -i '$a max_parallel_downloads=10' dnf.conf
+    sudo grep -qxF 'deltarpm=True' dnf.conf || sudo sed -i '$a deltarpm=True' dnf.conf
+    sudo grep -qxF 'defaultyes=True' dnf.conf || sudo sed -i '$a defaultyes=True' dnf.conf
+}
+
+# Function to add RPM Fusion repositories and update the system
+add_rpm_fusion () {
+    sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    sudo dnf groupupdate -y core
+    sudo dnf upgrade -y --refresh
+}
+
+# Function to update firmware
+update_firmware () {
+    sudo fwupdmgr get-devices
+    sudo fwupdmgr refresh --force
+    sudo fwupdmgr get-updates
+    sudo fwupdmgr update
+}
+
+# Function to install media codecs
+install_media_codecs () {
+    sudo dnf groupupdate -y "core" "multimedia" "sound-and-video" --setopt="install_weak_deps=False" --exclude="PackageKit-gstreamer-plugin" --allowerasing
+    sudo dnf swap -y "ffmpeg-free" "ffmpeg" --allowerasing
+    sudo dnf install -y gstreamer1-plugins-{bad-*,good-*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg
+    sudo dnf install -y lame* --exclude=lame-devel
+    sudo dnf group upgrade -y --with-optional Multimedia
+}
+
+# Function to enable hardware video acceleration
+enable_hw_video_acceleration () {
+    sudo dnf install -y ffmpeg ffmpeg-libs libva libva-utils
+    sudo dnf config-manager --set-enabled fedora-cisco-openh264
+    sudo dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264
+}
+
+# Function to install commonly used applications
+install_commonly_used_apps () {
+    sudo dnf install -y fastfetch timeshift gnome-console gnome-tweaks vlc
+    flatpak install -y com.mattjakeman.ExtensionManager ca.desrt.dconf-editor net.nokyan.Resources
+}
+
+# Function to install personal applications for Aiman
 personal_apps () {
-    # Installing Hoyoverse repo
     flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
-    # Installing conky manager repo
-    sudo dnf copr enable -y geraldosimiao/conky-manager2
-    # Installing VSCode repo
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
     dnf check-update
-    # Installing personal apps
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
-    sudo dnf install -y conky-manager2 gnome-shell-extension-pop-shell xprop unzip p7zip p7zip-plugins unrar code
-    flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.realmazharhussain.GdmSettings io.github.shiftey.Desktop
+    sudo dnf install -y unzip p7zip p7zip-plugins unrar code
+    flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.shiftey.Desktop
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
+# Function to remove bloatware
+remove_bloatware () {
+    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal gnome-system-monitor gnome-extensions-app firefox totem
+}
+
+# Function to install themes
 setup_theme () {
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
+    sudo dnf copr enable -y geraldosimiao/conky-manager2
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop
+    flatpak install -y io.github.realmazharhussain.GdmSettings
     cd
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
@@ -71,95 +121,96 @@ custom_ops=(
     "Installing themes"
 )
 
+# Define custom commands as function names
 custom_commands=(
-    # Improve DNF Speed by updating conf file
     "imp_dnf"
-    # Adding RPM Fusion
-    "sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm; sudo dnf groupupdate -y core; sudo dnf upgrade -y --refresh"
-    # Updating firmware
-    "sudo fwupdmgr get-devices; sudo fwupdmgr refresh --force; sudo fwupdmgr get-updates; sudo fwupdmgr update"
-    # Installing media codecs
-    "sudo dnf groupupdate -y 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync; sudo dnf swap -y 'ffmpeg-free' 'ffmpeg' --allowerasing; sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg; sudo dnf install -y lame\* --exclude=lame-devel; sudo dnf group upgrade -y --with-optional Multimedia"
-    # Enabling H/W video acceleration
-    "sudo dnf install -y ffmpeg ffmpeg-libs libva libva-utils; sudo dnf config-manager --set-enabled fedora-cisco-openh264; sudo dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264"
-    # Installing commonly used apps
-    "sudo dnf install -y fastfetch timeshift gnome-console gnome-tweaks vlc; flatpak install -y com.mattjakeman.ExtensionManager ca.desrt.dconf-editor net.nokyan.Resources"
-    # Installing personal apps for Aiman
+    "add_rpm_fusion"
+    "update_firmware"
+    "install_media_codecs"
+    "enable_hw_video_acceleration"
+    "install_commonly_used_apps"
     "personal_apps"
-    # Removing bloatware
-    "sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal gnome-system-monitor gnome-extensions-app firefox totem"
-    # Installing themes
+    "remove_bloatware"
     "setup_theme"
 )
 
-# Define your function
-func_proc () {
-    # Extract custom text and commands from function arguments
-    local user_de=("${!1}") # Indirect reference to array variable
-    local custom_ops=("${!2}")  # Indirect reference to array variable
-    local custom_commands=("${!3}")  # Indirect reference to array variable
+# Define user DE
+user_de=("GNOME" "KDE")
 
-    # Print available DE
-    echo "Available DE:"
-    for ((i = 0; i < ${#user_de[@]}; i++)); do
-        echo "$((i+1)). ${user_de[i]}"
-    done
+# Function to handle Zenity dialogs
+zenity_dialogs () {
+    local user_de=("${!1}")
+    local custom_ops=("${!2}")
+    local custom_commands=("${!3}")
 
-    # Prompt user to select commands
-    read -p "Select your Desktop Environment (enter the number only): " select_de
-    select_de=${select_de:-1}
+    # Select DE using Zenity
+    user_select_de=$(zenity --list --title="Select Your Desktop Environment" --column="DE" "${user_de[@]}")
 
-    if [ "$select_de" == "1" ]; then
-        user_select_de="GNOME"
-    else
-        user_select_de="KDE"
-        # Change index if required
-        custom_commands[7]="sudo dnf remove pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+    if [ -z "$user_select_de" ]; then
+        exit 1
     fi
 
-    echo -e "${RED}\nYou will be running ${user_select_de} specific modification!${WHITE}"
-    echo -e "${RED}Please close the script if the option is wrong!\n${WHITE}"
-
-    # Print available commands
-    echo "Available commands:"
-    for ((i = 0; i < ${#custom_ops[@]}; i++)); do
-        echo "$((i+1)). ${custom_ops[i]}"
-    done
-
-    # Prompt user to select commands
-    read -p "Enter the numbers of the commands to run (separated by spaces), or 'all' to run all commands: " selected_indices
-    selected_indices=${selected_indices:-all}
-
-    # Check if 'all' was selected
-    if [ "$selected_indices" == "all" ]; then
-        selected_indices=$(seq -s ' ' 1 ${#custom_ops[@]})
+    # Modify commands for KDE
+    if [ "$user_select_de" == "KDE" ]; then
+        # Installing commonly used apps
+        custom_commands[5]="sudo dnf install -y fastfetch timeshift vlc; flatpak install -y net.nokyan.Resources"
+        # Removing bloatware
+        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        # Removing the setup_theme function for KDE
+        unset 'custom_ops[8]'
+        unset 'custom_commands[8]'  
     fi
 
-    # Convert selected indices to array
-    IFS=' ' read -ra indices <<< "$selected_indices"
+    zenity --question --text="You have select ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No"
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+
+    # Add "Select All" option to custom_ops
+    custom_ops=("Select All" "${custom_ops[@]}")
+
+    # Select commands to run using Zenity with multi-select option
+    selected_indices=$(zenity --list --title="Select Commands to Run: Multi Select using Ctrl + Alt" --column="Commands" "${custom_ops[@]}" --multiple)
+
+    if [ -z "$selected_indices" ]; then
+        zenity --error --text="No commands selected. Exiting."
+        exit 1
+    fi
+
+    # Convert selected options to indices
+    IFS='|' read -ra indices <<< "$selected_indices"
+
+    # Check if "Select All" was chosen
+    if [[ " ${indices[@]} " =~ " Select All " ]]; then
+        indices=("${custom_ops[@]:1}")  # Select all options excluding "Select All"
+    fi
+
+    # Show selected options in an info message
+    zenity --info --text="Your selected options: ${indices[*]}"
 
     # Execute selected commands
-    for index in "${indices[@]}"; do
-        if [[ $index =~ ^[0-9]+$ && $index -ge 1 && $index -le ${#custom_ops[@]} ]]; then
-            echo -e "\n${BLUE}${custom_ops[index-1]} ${WHITE}"
-            eval "${custom_commands[index-1]}"
-            echo -e "${RED}Process Completed!${WHITE}\n"
-        else
-            echo "\nInvalid selection: $index\n"
-        fi
+    for selected_option in "${indices[@]}"; do
+        for ((i = 1; i < ${#custom_ops[@]}; i++)); do
+            if [ "${custom_ops[i]}" == "$selected_option" ]; then
+                echo -e "\nExecuting: ${custom_ops[i]}"
+                eval "${custom_commands[i-1]}"  # Adjust index for command
+                echo -e "Process Completed!\n"
+            fi
+        done
     done
 
     sudo dnf upgrade -y --refresh
     sudo dnf autoremove -y
 
-    echo -e "${BLUE}It is recommended to reboot${WHITE}"
-    read -p "Press y to continue: " reboot_now
-    reboot_now=${reboot_now:-y}
-
-    if [ "$reboot_now" == "y" ]; then
+    zenity --question --text="It is recommended to reboot. Reboot now?" --ok-label="Yes" --cancel-label="No"
+    if [ $? -eq 0 ]; then
         reboot
     fi
 }
 
-# Call the function with arrays of custom text and multi-line commands
-func_proc user_de[@] custom_ops[@] custom_commands[@]
+# Call the check distribution function
+check_distribution
+# Call the zenity check function
+check_zenity
+# Call the Zenity dialog function with arrays of custom text and multi-line commands
+zenity_dialogs user_de[@] custom_ops[@] custom_commands[@]
