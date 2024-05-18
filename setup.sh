@@ -137,6 +137,14 @@ custom_commands=(
 # Define user DE
 user_de=("GNOME" "KDE")
 
+# Define the log file
+log_file="command_output.log"
+
+# Check if the log file exists and remove it if it does
+if [ -f "$log_file" ]; then
+    rm "$log_file"
+fi
+
 # Function to handle Zenity dialogs
 zenity_dialogs () {
     local user_de=("${!1}")
@@ -193,7 +201,7 @@ zenity_dialogs () {
         for ((i = 1; i < ${#custom_ops[@]}; i++)); do
             if [ "${custom_ops[i]}" == "$selected_option" ]; then
                 echo -e "\nExecuting: ${custom_ops[i]}"
-                eval "${custom_commands[i-1]}"  # Adjust index for command
+                (${custom_commands[i-1]}) | tee -a "$log_file"
                 echo -e "Process Completed!\n"
             fi
         done
