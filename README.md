@@ -7,7 +7,9 @@ POST INSTALL SCRIPT FOR FEDORA 40+
 > Run the command below to run this script.
 >
 > ```
-> bash -c "$(curl https://raw.githubusercontent.com/Aiman217/fedora-gnome-post-install/master/setup.sh)"
+> git clone https://github.com/Aiman217/fedora-gnome-post-install.git
+> cd fedora-gnome-post-install
+> sudo ./setup.sh
 > ```
 
 > [!CAUTION]
