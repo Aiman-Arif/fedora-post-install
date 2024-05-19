@@ -56,13 +56,6 @@ install_media_codecs () {
     sudo dnf group upgrade -y --with-optional Multimedia
 }
 
-# Function to enable hardware video acceleration
-enable_hw_video_acceleration () {
-    sudo dnf install -y ffmpeg ffmpeg-libs libva libva-utils
-    sudo dnf config-manager --set-enabled fedora-cisco-openh264
-    sudo dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264
-}
-
 # Function to install commonly used applications
 install_commonly_used_apps () {
     sudo dnf install -y fastfetch timeshift gnome-console gnome-tweaks vlc
@@ -109,7 +102,7 @@ setup_theme () {
     sudo dnf copr enable -y peterwu/rendezvous
     sudo dnf install -y bibata-cursor-themes
     wget -qO- https://git.io/papirus-icon-theme-install | sh
-    cp /assets/wallpapers/Fantasy-Landscape.png ~/Pictures/
+    cp ./assets/wallpapers/Fantasy-Landscape.png ~/Pictures/
     gsettings set org.gnome.desktop.background picture-uri "file://$HOME/Pictures/Fantasy-Landscape.png"
     gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Pink-Dark-Gruvbox"
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
@@ -122,7 +115,6 @@ custom_ops=(
     "Adding RPM Fusion"
     "Updating firmware"
     "Installing media codecs"
-    "Enabling H/W video acceleration"
     "Installing commonly used apps"
     "Installing personal apps for Aiman"
     "Removing bloatware"
@@ -135,7 +127,6 @@ custom_commands=(
     "add_rpm_fusion"
     "update_firmware"
     "install_media_codecs"
-    "enable_hw_video_acceleration"
     "install_commonly_used_apps"
     "personal_apps"
     "remove_bloatware"
@@ -169,12 +160,12 @@ zenity_dialogs () {
     # Modify commands for KDE
     if [ "$user_select_de" == "KDE" ]; then
         # Installing commonly used apps
-        custom_commands[5]="sudo dnf install -y fastfetch timeshift vlc; flatpak install -y net.nokyan.Resources"
+        custom_commands[4]="sudo dnf install -y fastfetch timeshift vlc; flatpak install -y net.nokyan.Resources"
         # Removing bloatware
-        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        custom_commands[6]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
         # Removing the setup_theme function for KDE
-        unset 'custom_ops[8]'
-        unset 'custom_commands[8]'  
+        unset 'custom_ops[7]'
+        unset 'custom_commands[7]'  
     fi
 
     zenity --question --text="You have select ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No"
