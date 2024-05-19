@@ -1,7 +1,7 @@
 POST INSTALL SCRIPT FOR FEDORA 40+
 ===========================
 > [!NOTE] 
-> Will be updated after every version update of Fedora Workstation.
+> Will be updated after every version update of Fedora. Support GNOME and KDE version only.
 
 > [!IMPORTANT]
 > Run the command below to run this script.
