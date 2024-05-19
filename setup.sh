@@ -93,6 +93,9 @@ setup_theme () {
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
     sudo dnf copr enable -y geraldosimiao/conky-manager2
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop
+    gnome-extensions install "assets/extensions/rounded-window-corners@fxgn.shell-extension.zip"
+    gnome-extensions enable pop-shell@system76.com
+    gnome-extensions enable rounded-window-corners@fxgn
     flatpak install -y io.github.realmazharhussain.GdmSettings
     cd
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
@@ -106,6 +109,10 @@ setup_theme () {
     sudo dnf copr enable -y peterwu/rendezvous
     sudo dnf install -y bibata-cursor-themes
     wget -qO- https://git.io/papirus-icon-theme-install | sh
+    cp /assets/wallpapers/Fantasy-Landscape.png ~/Pictures/
+    gsettings set org.gnome.desktop.background picture-uri "file://$HOME/Pictures/Fantasy-Landscape.png"
+    gsettings set org.gnome.desktop.interface gtk-theme 'Colloid-Pink-Dark-Gruvbox'
+    gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'
 }
 
 # Define custom text and corresponding multi-line commands as arrays
