@@ -111,8 +111,9 @@ setup_theme () {
     wget -qO- https://git.io/papirus-icon-theme-install | sh
     cp /assets/wallpapers/Fantasy-Landscape.png ~/Pictures/
     gsettings set org.gnome.desktop.background picture-uri "file://$HOME/Pictures/Fantasy-Landscape.png"
-    gsettings set org.gnome.desktop.interface gtk-theme 'Colloid-Pink-Dark-Gruvbox'
-    gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'
+    gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Pink-Dark-Gruvbox"
+    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
+    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
 }
 
 # Define custom text and corresponding multi-line commands as arrays
