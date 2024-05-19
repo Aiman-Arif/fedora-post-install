@@ -9,7 +9,7 @@ POST INSTALL SCRIPT FOR FEDORA 40+
 > ```
 > git clone https://github.com/Aiman217/fedora-gnome-post-install.git
 > cd fedora-gnome-post-install
-> sudo ./setup.sh
+> ./setup.sh
 > ```
 
 > [!CAUTION]
@@ -20,8 +20,7 @@ POST INSTALL SCRIPT FOR FEDORA 40+
 2. Adding RPM Fusion
 3. Updating firmware
 4. Installing media codecs
-5. Enabling H/W video acceleration
-6. Installing commonly used apps
-7. Installing personal apps for Aiman
-8. Removing bloatware
-9. Installing themes (Colloid gtk, Papirus icon, Bibata cursor)
+5. Installing commonly used apps
+6. Installing personal apps for Aiman
+7. Removing bloatware
+8. Installing themes (Colloid gtk, Papirus icon, Bibata cursor)

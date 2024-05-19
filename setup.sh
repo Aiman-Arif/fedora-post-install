@@ -91,35 +91,34 @@ remove_bloatware () {
 # Function to install themes
 setup_theme () {
     # Override Flatpak filesystem permissions
+    cd ~/
+    mkdir .themes .icons
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
     # Enable COPR repositories and install theme-related packages
     sudo dnf copr enable -y geraldosimiao/conky-manager2
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop
-    # Install and enable GNOME extensions
-    gnome-extensions install "assets/extensions/rounded-window-corners@fxgn.shell-extension.zip"
-    gnome-extensions enable pop-shell@system76.com
-    gnome-extensions enable rounded-window-corners@fxgn
     flatpak install -y io.github.realmazharhussain.GdmSettings
+    # Install and enable GNOME extensions
+    gnome-extensions install --force "./assets/extensions/rounded-window-corners@fxgn.shell-extension.zip"
+    gnome-extensions enable pop-shell@system76.com
     # Install and configure Colloid GTK theme
-    cd
+    cd ~/
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
     ./install.sh -t pink --tweaks gruvbox black rimless
     ./install.sh -t pink --tweaks gruvbox black rimless -c dark -l
-    cd
-    cd .themes
+    cd ~/.themes
     sudo cp -r ./. /usr/share/themes
-    cd
     # Install Bibata cursor theme
     sudo dnf copr enable -y peterwu/rendezvous
     sudo dnf install -y bibata-cursor-themes
     # Install Papirus icon theme
     wget -qO- https://git.io/papirus-icon-theme-install | sh
     # Set desktop background and themes
+    cd ~/fedora-gnome-post-install
     cp ./assets/wallpapers/Fantasy-Landscape.png ~/Pictures/
-    gsettings set org.gnome.desktop.background picture-uri "file://$HOME/Pictures/Fantasy-Landscape.png"
     gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Pink-Dark-Gruvbox"
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
     gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
