@@ -24,13 +24,13 @@ check_zenity() {
 }
 
 # Function to improve DNF speed by updating the configuration file
-imp_dnf () {
-    cd /etc/dnf  # Navigate to DNF configuration directory
+imp_dnf() {
+    local dnf_conf="/etc/dnf/dnf.conf"
     # Add settings to dnf.conf if they do not already exist
-    sudo grep -qxF 'fastestmirror=1' dnf.conf || sudo sed -i '$a fastestmirror=1' dnf.conf
-    sudo grep -qxF 'max_parallel_downloads=10' dnf.conf || sudo sed -i '$a max_parallel_downloads=10' dnf.conf
-    sudo grep -qxF 'deltarpm=True' dnf.conf || sudo sed -i '$a deltarpm=True' dnf.conf
-    sudo grep -qxF 'defaultyes=True' dnf.conf || sudo sed -i '$a defaultyes=True' dnf.conf
+    sudo grep -qxF 'fastestmirror=1' $dnf_conf || echo 'fastestmirror=1' | sudo tee -a $dnf_conf
+    sudo grep -qxF 'max_parallel_downloads=10' $dnf_conf || echo 'max_parallel_downloads=10' | sudo tee -a $dnf_conf
+    sudo grep -qxF 'deltarpm=True' $dnf_conf || echo 'deltarpm=True' | sudo tee -a $dnf_conf
+    sudo grep -qxF 'defaultyes=True' $dnf_conf || echo 'defaultyes=True' | sudo tee -a $dnf_conf
 }
 
 # Function to add RPM Fusion repositories and update the system
@@ -166,7 +166,7 @@ zenity_dialogs () {
     local custom_commands=("${!3}")
 
     # Select DE using Zenity
-    user_select_de=$(zenity --list --title="Select Your Desktop Environment" --column="DE" "${user_de[@]}")
+    user_select_de=$(zenity --list --title="Select Your Desktop Environment" --column="DE" "${user_de[@]}" --width=500 --height=500 )
 
     if [ -z "$user_select_de" ]; then
         exit 1  # Exit if no DE was selected
@@ -181,7 +181,7 @@ zenity_dialogs () {
         unset 'custom_commands[7]'
     fi
 
-    zenity --question --text="You have selected ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No"
+    zenity --question --text="You have selected ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No" --width=300 --height=150
     if [ $? -ne 0 ]; then
         exit 1  # Exit if the DE selection is not confirmed
     fi
@@ -190,10 +190,10 @@ zenity_dialogs () {
     custom_ops=("Select All" "${custom_ops[@]}")
 
     # Select commands to run using Zenity with multi-select option
-    selected_indices=$(zenity --list --title="Select Commands to Run: Multi Select using Ctrl + Alt" --column="Available commands" "${custom_ops[@]}" --multiple)
+    selected_indices=$(zenity --list --title="Select Commands to Run: Multi Select using Ctrl + Alt" --column="Available commands" "${custom_ops[@]}" --multiple --width=500 --height=500)
 
     if [ -z "$selected_indices" ]; then
-        zenity --error --text="No commands selected. Exiting."
+        zenity --error --text="No commands selected. Exiting." --width=300 --height=150
         exit 1  # Exit if no commands are selected
     fi
 
@@ -205,8 +205,10 @@ zenity_dialogs () {
         indices=("${custom_ops[@]:1}")  # Select all options excluding "Select All"
     fi
 
-    # Show selected options in an info message
-    zenity --info --text="Your selected options: ${indices[*]}"
+    # Show selected options in an info message with commas separating them
+    joined_indices=$(printf "%s, " "${indices[@]}")
+    joined_indices="${joined_indices%, }"  # Remove the trailing comma and space
+    zenity --info --text="Your selected options: ${joined_indices}" --width=300 --height=150
 
     # Execute selected commands
     for selected_option in "${indices[@]}"; do
@@ -222,7 +224,7 @@ zenity_dialogs () {
     sudo dnf upgrade -y --refresh  # Upgrade all packages
     sudo dnf autoremove -y  # Remove unnecessary packages
 
-    zenity --question --text="It is recommended to reboot. Reboot now?" --ok-label="Yes" --cancel-label="No"
+    zenity --question --text="It is recommended to reboot. Reboot now?" --ok-label="Yes" --cancel-label="No" --width=300 --height=150
     if [ $? -eq 0 ]; then
         reboot  # Reboot the system if the user agrees
     fi
