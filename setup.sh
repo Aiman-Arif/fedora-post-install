@@ -78,7 +78,7 @@ personal_apps () {
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
     sudo dnf install -y unzip p7zip p7zip-plugins unrar code
-    flatpak install -y com.bitwarden.desktop one.ablaze.floorp io.github.shiftey.Desktop
+    flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
