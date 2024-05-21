@@ -21,6 +21,6 @@ POST INSTALL SCRIPT FOR FEDORA 40+
 3. Updating firmware
 4. Installing media codecs
 5. Installing commonly used apps
-6. Installing personal apps for Aiman
+6. Installing personal apps
 7. Removing bloatware
 8. Installing themes (Colloid gtk, Papirus icon, Bibata cursor)
