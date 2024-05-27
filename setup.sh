@@ -63,8 +63,8 @@ install_media_codecs () {
 # Function to install commonly used applications
 install_commonly_used_apps () {
     # Install applications via DNF and Flatpak
-    sudo dnf install -y fastfetch timeshift gnome-console gnome-tweaks vlc
-    flatpak install -y one.ablaze.floorp com.mattjakeman.ExtensionManager ca.desrt.dconf-editor net.nokyan.Resources
+    sudo dnf install -y fastfetch timeshift vlc
+    flatpak install -y one.ablaze.floorp net.nokyan.Resources
 }
 
 # Function to install personal applications for Aiman
@@ -92,8 +92,8 @@ setup_theme () {
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
     # Enable COPR repositories and install theme-related packages
     sudo dnf copr enable -y geraldosimiao/conky-manager2
-    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop
-    flatpak install -y io.github.realmazharhussain.GdmSettings
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop gnome-console gnome-tweaks
+    flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
     # Install and enable GNOME extensions
     cd assets/extensions && gnome-extensions install --force rounded-window-corners@fxgn.shell-extension.zip && cd ~/
     # Install and configure Colloid GTK theme
@@ -164,6 +164,9 @@ zenity_dialogs () {
     local custom_ops=("${!2}")
     local custom_commands=("${!3}")
 
+    # Install flathub repository
+    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
     # Select DE using Zenity
     user_select_de=$(zenity --list --title="Select Your Desktop Environment" --column="DE" "${user_de[@]}" --width=500 --height=500 )
 
@@ -174,10 +177,10 @@ zenity_dialogs () {
     # Modify commands for KDE
     if [ "$user_select_de" == "KDE" ]; then
         # Adjust commands for KDE environment
-        custom_commands[4]="sudo dnf install -y fastfetch timeshift vlc; flatpak install -y net.nokyan.Resources"
-        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
-        unset 'custom_ops[6]'  # Remove setup_theme function for KDE
+        # Remove setup_theme function for KDE
+        unset 'custom_ops[6]'
         unset 'custom_commands[6]'
+        custom_commands[6]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     fi
 
     zenity --question --text="You have selected ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No" --width=300 --height=150
