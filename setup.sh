@@ -96,7 +96,6 @@ setup_theme () {
     flatpak install -y io.github.realmazharhussain.GdmSettings
     # Install and enable GNOME extensions
     cd assets/extensions && gnome-extensions install --force rounded-window-corners@fxgn.shell-extension.zip && cd ~/
-    gnome-extensions enable pop-shell@system76.com
     # Install and configure Colloid GTK theme
     cd ~/
     git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
