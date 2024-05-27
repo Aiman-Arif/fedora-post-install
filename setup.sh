@@ -64,7 +64,7 @@ install_media_codecs () {
 install_commonly_used_apps () {
     # Install applications via DNF and Flatpak
     sudo dnf install -y fastfetch timeshift gnome-console gnome-tweaks vlc
-    flatpak install -y com.mattjakeman.ExtensionManager ca.desrt.dconf-editor net.nokyan.Resources
+    flatpak install -y one.ablaze.floorp com.mattjakeman.ExtensionManager ca.desrt.dconf-editor net.nokyan.Resources
 }
 
 # Function to install personal applications for Aiman
@@ -82,12 +82,6 @@ personal_apps () {
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
-# Function to remove bloatware
-remove_bloatware () {
-    # Remove unwanted applications
-    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal gnome-system-monitor gnome-extensions-app firefox totem
-}
-
 # Function to install themes
 setup_theme () {
     # Override Flatpak filesystem permissions
@@ -101,27 +95,33 @@ setup_theme () {
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop
     flatpak install -y io.github.realmazharhussain.GdmSettings
     # Install and enable GNOME extensions
-    gnome-extensions install --force "./assets/extensions/rounded-window-corners@fxgn.shell-extension.zip"
+    cd assets/extensions && gnome-extensions install --force rounded-window-corners@fxgn.shell-extension.zip && cd ~/
     gnome-extensions enable pop-shell@system76.com
     # Install and configure Colloid GTK theme
     cd ~/
-    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
-    cd Colloid-gtk-theme
-    ./install.sh -t pink --tweaks gruvbox black rimless
-    ./install.sh -t pink --tweaks gruvbox black rimless -c dark -l
+    git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
+    cd Graphite-gtk-theme
+    ./install.sh --tweaks black rimless float
+    ./install.sh --tweaks black rimless float -c dark -l
+    sudo ./install.sh --tweaks black rimless float -c dark --gdm
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
+    cd ~/
     # Install Bibata cursor theme
     sudo dnf copr enable -y peterwu/rendezvous
     sudo dnf install -y bibata-cursor-themes
     # Install Papirus icon theme
     wget -qO- https://git.io/papirus-icon-theme-install | sh
     # Set desktop background and themes
-    cd ~/fedora-gnome-post-install
-    cp ./assets/wallpapers/Fantasy-Landscape.png ~/Pictures/
-    gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Pink-Dark-Gruvbox"
+    gsettings set org.gnome.desktop.interface gtk-theme "Graphite-Dark"
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
     gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
+}
+
+# Function to remove bloatware
+remove_bloatware () {
+    # Remove unwanted applications
+    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal gnome-system-monitor gnome-extensions-app firefox totem
 }
 
 # Define custom text and corresponding multi-line commands as arrays
@@ -132,8 +132,8 @@ custom_ops=(
     "Installing media codecs"
     "Installing commonly used apps"
     "Installing personal apps for Aiman"
-    "Removing bloatware"
     "Installing themes"
+    "Removing bloatware"
 )
 
 # Define custom commands as function names
@@ -144,8 +144,8 @@ custom_commands=(
     "install_media_codecs"
     "install_commonly_used_apps"
     "personal_apps"
-    "remove_bloatware"
     "setup_theme"
+    "remove_bloatware"
 )
 
 # Define user DE
@@ -176,9 +176,9 @@ zenity_dialogs () {
     if [ "$user_select_de" == "KDE" ]; then
         # Adjust commands for KDE environment
         custom_commands[4]="sudo dnf install -y fastfetch timeshift vlc; flatpak install -y net.nokyan.Resources"
-        custom_commands[6]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
-        unset 'custom_ops[7]'  # Remove setup_theme function for KDE
-        unset 'custom_commands[7]'
+        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        unset 'custom_ops[6]'  # Remove setup_theme function for KDE
+        unset 'custom_commands[6]'
     fi
 
     zenity --question --text="You have selected ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No" --width=300 --height=150
