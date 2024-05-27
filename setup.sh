@@ -94,15 +94,12 @@ setup_theme () {
     sudo dnf copr enable -y geraldosimiao/conky-manager2
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop gnome-console gnome-tweaks
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
-    # Install and enable GNOME extensions
-    cd assets/extensions && gnome-extensions install --force rounded-window-corners@fxgn.shell-extension.zip && cd ~/
     # Install and configure Colloid GTK theme
     cd ~/
-    git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
-    cd Graphite-gtk-theme
-    ./install.sh --tweaks black rimless float
-    ./install.sh --tweaks black rimless float -c dark -l
-    sudo ./install.sh --tweaks black rimless float -c dark --gdm
+    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
+    cd Colloid-gtk-theme
+    ./install.sh -t pink --tweaks gruvbox black rimless float
+    ./install.sh -t pink --tweaks gruvbox black rimless float -c dark -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
@@ -112,7 +109,9 @@ setup_theme () {
     # Install Papirus icon theme
     wget -qO- https://git.io/papirus-icon-theme-install | sh
     # Set desktop background and themes
-    gsettings set org.gnome.desktop.interface gtk-theme "Graphite-Dark"
+    cd ~/fedora-gnome-post-install
+    cp ./assets/wallpapers/Fantasy-Landscape.png ~/Pictures/
+    gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Pink-Dark-Gruvbox"
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
     gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
 }
