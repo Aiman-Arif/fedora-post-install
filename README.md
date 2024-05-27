@@ -22,5 +22,5 @@ POST INSTALL SCRIPT FOR FEDORA 40+
 4. Installing media codecs
 5. Installing commonly used apps
 6. Installing personal apps
-7. Removing bloatware
-8. Installing themes (Colloid gtk, Papirus icon, Bibata cursor)
+7. Installing themes (GNOME only)
+8. Removing bloatware
