@@ -116,6 +116,19 @@ setup_theme () {
     gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
 }
 
+# Function to install ohmybash
+install_ohmybash () {
+    cd ~/.local/share
+    mkdir fonts
+    # Install required fonts
+    cd ~/
+    git clone https://github.com/powerline/fonts.git
+    cd fonts
+    ./install.sh
+    # Install OhMyBash
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+}
+
 # Function to remove bloatware
 remove_bloatware () {
     # Remove unwanted applications
@@ -131,6 +144,7 @@ custom_ops=(
     "Installing commonly used apps"
     "Installing personal apps for Aiman"
     "Installing themes"
+    "Installing OhMyBash"
     "Removing bloatware"
 )
 
@@ -143,6 +157,7 @@ custom_commands=(
     "install_commonly_used_apps"
     "personal_apps"
     "setup_theme"
+    "install_ohmybash"
     "remove_bloatware"
 )
 
