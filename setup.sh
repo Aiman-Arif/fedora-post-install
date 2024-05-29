@@ -96,16 +96,15 @@ setup_theme () {
     # Enable pop-os extension
     sudo dnf install -y gnome-shell-extension-pop-shell xprop
     # Enable theme related apps
-    sudo dnf install -y gnome-console gnome-tweaks sassc glib2-devel
+    sudo dnf install -y gnome-console gnome-tweaks
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
     # Install and configure GTK theme
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
     cd ~/
-    git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
-    cd Graphite-gtk-theme
-    ./install.sh -t red --tweaks black rimless float
-    ./install.sh -t red --tweaks black rimless float -c dark -l
-    sudo ./install.sh -t red --tweaks black rimless float -c dark --gdm
+    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
+    cd Colloid-gtk-theme
+    ./install.sh -t red --tweaks gruvbox black rimless float
+    ./install.sh -t red --tweaks gruvbox black rimless float -c dark -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
