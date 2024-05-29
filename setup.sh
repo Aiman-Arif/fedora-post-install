@@ -99,24 +99,24 @@ setup_theme () {
     sudo dnf install -y gnome-console gnome-tweaks sassc glib2-devel
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
     # Install and configure GTK theme
-    # sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
-    # cd ~/
-    # git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
-    # cd Graphite-gtk-theme
-    # ./install.sh -t red --tweaks black rimless float
-    # ./install.sh -t red --tweaks black rimless float -c dark -l
-    # sudo ./install.sh -t red --tweaks black rimless float -c dark --gdm
-    # cd ~/.themes
-    # sudo cp -r ./. /usr/share/themes
-    # cd ~/
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
+    cd ~/
+    git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
+    cd Graphite-gtk-theme
+    ./install.sh -t red --tweaks black rimless float
+    ./install.sh -t red --tweaks black rimless float -c dark -l
+    sudo ./install.sh -t red --tweaks black rimless float -c dark --gdm
+    cd ~/.themes
+    sudo cp -r ./. /usr/share/themes
+    cd ~/
     # Install Bibata cursor theme
     sudo dnf copr enable -y peterwu/rendezvous
     sudo dnf install -y bibata-cursor-themes
     # Install Papirus icon theme
     wget -qO- https://git.io/papirus-icon-theme-install | sh
     # Install Papirus folder icon theme
-    # wget -qO- https://git.io/papirus-folders-install | sh
-    # papirus-folders -C red --theme Papirus-Dark
+    wget -qO- https://git.io/papirus-folders-install | sh
+    papirus-folders -C red --theme Papirus-Dark
     # Set themes
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
     gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
