@@ -90,9 +90,6 @@ related_theme () {
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    # Enable Conky repositories
-    sudo dnf copr enable -y geraldosimiao/conky-manager2
-    sudo dnf install -y conky-manager2
     # Enable pop-os extension
     sudo dnf install -y gnome-shell-extension-pop-shell xprop
     # Enable theme related apps
@@ -113,11 +110,10 @@ install_theme () {
     # Install and configure GTK theme
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc glib2-devel
     cd ~/
-    git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
-    cd Graphite-gtk-theme
-    ./install.sh -t blue --tweaks nord darker rimless float
-    ./install.sh -t blue --tweaks nord darker rimless float -c dark -l
-    sudo ./install.sh -t blue --tweaks nord darker rimless float -c dark --gdm
+    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
+    cd Colloid-gtk-theme
+    ./install.sh -t grey --tweaks gruvbox black rimless float
+    ./install.sh -t grey --tweaks gruvbox black rimless float -c dark -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
