@@ -113,16 +113,17 @@ install_theme () {
     # Install and configure GTK theme
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
     cd ~/
-    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
-    cd Colloid-gtk-theme
-    ./install.sh -t red --tweaks gruvbox black rimless float
-    ./install.sh -t red --tweaks gruvbox black rimless float -c dark -l
+    git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
+    cd Graphite-gtk-theme
+    ./install.sh -t blue --tweaks nord darker rimless float
+    ./install.sh -t blue --tweaks nord darker rimless float -c dark -l
+    sudo ./install.sh -t blue --tweaks nord darker rimless float -c dark --gdm
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
     # Install Papirus folder icon theme
     wget -qO- https://git.io/papirus-folders-install | sh
-    papirus-folders -C red --theme Papirus-Dark
+    papirus-folders -C blue --theme Papirus-Dark
 }
 
 # Function to install ohmybash
