@@ -63,7 +63,7 @@ install_media_codecs () {
 # Function to install commonly used applications
 install_commonly_used_apps () {
     # Install applications via DNF and Flatpak
-    sudo dnf install -y fastfetch timeshift vlc
+    sudo dnf install -y fastfetch timeshift vlc cascadia-code-nf-fonts
     flatpak install -y one.ablaze.floorp net.nokyan.Resources
 }
 
@@ -77,13 +77,13 @@ personal_apps () {
     dnf check-update
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
-    sudo dnf install -y unzip p7zip p7zip-plugins unrar code
+    sudo dnf install -y kitty unzip p7zip p7zip-plugins unrar code
     flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop org.telegram.desktop
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
-# Function to install themes
-setup_theme () {
+# Function to install theme related apps
+related_theme () {
     # Override Flatpak filesystem permissions
     cd ~/
     mkdir .themes .icons
@@ -96,8 +96,20 @@ setup_theme () {
     # Enable pop-os extension
     sudo dnf install -y gnome-shell-extension-pop-shell xprop
     # Enable theme related apps
-    sudo dnf install -y gnome-console gnome-tweaks
+    sudo dnf install -y gnome-tweaks
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
+    # Install Bibata cursor theme
+    sudo dnf copr enable -y peterwu/rendezvous
+    sudo dnf install -y bibata-cursor-themes
+    # Install Papirus icon theme
+    wget -qO- https://git.io/papirus-icon-theme-install | sh
+    # Set themes
+    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
+    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
+}
+
+# Function to install themes
+install_theme () {
     # Install and configure GTK theme
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
     cd ~/
@@ -108,17 +120,9 @@ setup_theme () {
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
-    # Install Bibata cursor theme
-    sudo dnf copr enable -y peterwu/rendezvous
-    sudo dnf install -y bibata-cursor-themes
-    # Install Papirus icon theme
-    wget -qO- https://git.io/papirus-icon-theme-install | sh
     # Install Papirus folder icon theme
     wget -qO- https://git.io/papirus-folders-install | sh
     papirus-folders -C red --theme Papirus-Dark
-    # Set themes
-    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
-    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
 }
 
 # Function to install ohmybash
@@ -150,7 +154,8 @@ custom_ops=(
     "Installing media codecs"
     "Installing commonly used apps"
     "Installing personal apps for Aiman"
-    "Installing themes"
+    "Installing theme related apps"
+    "Installing GTK themes"
     "Installing OhMyBash"
     "Removing bloatware"
 )
@@ -163,7 +168,8 @@ custom_commands=(
     "install_media_codecs"
     "install_commonly_used_apps"
     "personal_apps"
-    "setup_theme"
+    "related_theme"
+    "install_theme"
     "install_ohmybash"
     "remove_bloatware"
 )
@@ -199,9 +205,9 @@ zenity_dialogs () {
     if [ "$user_select_de" == "KDE" ]; then
         # Adjust commands for KDE environment
         # Remove setup_theme function for KDE
-        unset 'custom_ops[6]'
-        unset 'custom_commands[6]'
-        custom_commands[6]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        unset 'custom_ops[7]'
+        unset 'custom_commands[7]'
+        custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator konsole korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     fi
 
     zenity --question --text="You have selected ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No" --width=300 --height=150
