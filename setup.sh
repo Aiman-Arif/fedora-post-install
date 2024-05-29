@@ -78,7 +78,7 @@ personal_apps () {
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
     sudo dnf install -y unzip p7zip p7zip-plugins unrar code
-    flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop
+    flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop org.telegram.desktop
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
@@ -89,28 +89,36 @@ setup_theme () {
     mkdir .themes .icons
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
+    flatpak override --filesystem=xdg-config/gtk-4.0
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    # Enable COPR repositories and install theme-related packages
+    # Enable Conky repositories
     sudo dnf copr enable -y geraldosimiao/conky-manager2
-    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc conky-manager2 gnome-shell-extension-pop-shell xprop gnome-console gnome-tweaks
+    sudo dnf install -y conky-manager2
+    # Enable pop-os extension
+    sudo dnf install -y gnome-shell-extension-pop-shell xprop
+    # Enable theme related apps
+    sudo dnf install -y gnome-console gnome-tweaks
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
-    # Install and configure Colloid GTK theme
-    cd ~/
-    git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
-    cd Graphite-gtk-theme
-    ./install.sh --tweaks black rimless float
-    ./install.sh --tweaks black rimless float -c dark -l
-    sudo ./install.sh --tweaks black rimless float -c dark --gdm
-    cd ~/.themes
-    sudo cp -r ./. /usr/share/themes
-    cd ~/
+    # Install and configure GTK theme
+    # sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
+    # cd ~/
+    # git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
+    # cd Graphite-gtk-theme
+    # ./install.sh -t red --tweaks black rimless float
+    # ./install.sh -t red --tweaks black rimless float -c dark -l
+    # sudo ./install.sh -t red --tweaks black rimless float -c dark --gdm
+    # cd ~/.themes
+    # sudo cp -r ./. /usr/share/themes
+    # cd ~/
     # Install Bibata cursor theme
     sudo dnf copr enable -y peterwu/rendezvous
     sudo dnf install -y bibata-cursor-themes
     # Install Papirus icon theme
     wget -qO- https://git.io/papirus-icon-theme-install | sh
+    # Install Papirus folder icon theme
+    # wget -qO- https://git.io/papirus-folders-install | sh
+    # papirus-folders -C red --theme Papirus-Dark
     # Set themes
-    gsettings set org.gnome.desktop.interface gtk-theme "Graphite-Dark"
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
     gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
 }
@@ -126,7 +134,8 @@ install_ohmybash () {
     ./install.sh
     # Install OhMyBash
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-    exit
+    cd ~/
+    rm -rf fonts
 }
 
 # Function to remove bloatware
