@@ -96,7 +96,7 @@ setup_theme () {
     # Enable pop-os extension
     sudo dnf install -y gnome-shell-extension-pop-shell xprop
     # Enable theme related apps
-    sudo dnf install -y gnome-console gnome-tweaks
+    sudo dnf install -y gnome-console gnome-tweaks sassc glib2-devel
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
     # Install and configure GTK theme
     # sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
