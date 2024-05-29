@@ -77,7 +77,7 @@ personal_apps () {
     dnf check-update
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
-    sudo dnf install -y kitty unzip p7zip p7zip-plugins unrar code
+    sudo dnf install -y gnome-console unzip p7zip p7zip-plugins unrar code
     flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop org.telegram.desktop
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
