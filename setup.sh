@@ -111,7 +111,7 @@ related_theme () {
 # Function to install themes
 install_theme () {
     # Install and configure GTK theme
-    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc glib2-devel
     cd ~/
     git clone https://github.com/vinceliuice/Graphite-gtk-theme.git
     cd Graphite-gtk-theme
