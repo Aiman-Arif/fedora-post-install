@@ -82,8 +82,8 @@ personal_apps () {
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
-# Function to install theme related apps
-related_theme () {
+# Function to install theme related apps for GNOME
+related_theme_gnome () {
     # Override Flatpak filesystem permissions
     cd ~/
     mkdir .themes .icons
@@ -105,6 +105,21 @@ related_theme () {
     gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
 }
 
+# Function to install theme related apps for KDE
+related_theme_kde () {
+    # Override Flatpak filesystem permissions
+    cd ~/
+    mkdir .themes .icons
+    sudo flatpak override --filesystem=$HOME/.themes
+    sudo flatpak override --filesystem=$HOME/.icons
+    sudo flatpak override --filesystem=xdg-config/gtk-4.0
+    # Install Bibata cursor theme
+    sudo dnf copr enable -y peterwu/rendezvous
+    sudo dnf install -y bibata-cursor-themes
+    # Install Papirus icon theme
+    wget -qO- https://git.io/papirus-icon-theme-install | sh
+}
+
 # Function to install themes
 install_theme () {
     # Install and configure GTK theme
@@ -112,8 +127,8 @@ install_theme () {
     cd ~/
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    ./install.sh -t grey --tweaks gruvbox black rimless float
-    ./install.sh -t grey --tweaks gruvbox black rimless float -c dark -l
+    ./install.sh --tweaks gruvbox black rimless float
+    ./install.sh --tweaks gruvbox black rimless float -c dark -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
@@ -165,7 +180,7 @@ custom_commands=(
     "install_media_codecs"
     "install_commonly_used_apps"
     "personal_apps"
-    "related_theme"
+    "related_theme_gnome"
     "install_theme"
     "install_ohmybash"
     "remove_bloatware"
@@ -204,6 +219,7 @@ zenity_dialogs () {
         # Remove setup_theme function for KDE
         unset 'custom_ops[7]'
         unset 'custom_commands[7]'
+        custom_commands[6]=related_theme_kde
         custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     fi
 
