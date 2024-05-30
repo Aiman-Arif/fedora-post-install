@@ -77,7 +77,7 @@ personal_apps () {
     dnf check-update
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
-    sudo dnf install -y gnome-console unzip p7zip p7zip-plugins unrar code
+    sudo dnf install -y unzip p7zip p7zip-plugins unrar code
     flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop org.telegram.desktop
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
@@ -140,7 +140,7 @@ install_ohmybash () {
 # Function to remove bloatware
 remove_bloatware () {
     # Remove unwanted applications
-    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-terminal gnome-system-monitor gnome-extensions-app firefox totem
+    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app firefox totem
 }
 
 # Define custom text and corresponding multi-line commands as arrays
@@ -204,7 +204,7 @@ zenity_dialogs () {
         # Remove setup_theme function for KDE
         unset 'custom_ops[7]'
         unset 'custom_commands[7]'
-        custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator konsole korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     fi
 
     zenity --question --text="You have selected ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No" --width=300 --height=150
