@@ -63,7 +63,7 @@ install_media_codecs () {
 # Function to install commonly used applications
 install_commonly_used_apps () {
     # Install applications via DNF and Flatpak
-    sudo dnf install -y fastfetch timeshift vlc cascadia-code-nf-fonts
+    sudo dnf install -y fastfetch vlc cascadia-code-nf-fonts
     flatpak install -y one.ablaze.floorp net.nokyan.Resources
 }
 
