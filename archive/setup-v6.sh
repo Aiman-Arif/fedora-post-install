@@ -14,11 +14,11 @@ check_distribution() {
     fi
 }
 
-# Function to check if YAD is installed
-check_yad() {
-    if ! command -v yad &> /dev/null; then
-        echo -e "\nExecuting: Installing YAD"
-        sudo dnf install -y yad  # Install YAD if not already installed
+# Function to check if Zenity is installed
+check_zenity() {
+    if ! command -v zenity &> /dev/null; then
+        echo -e "\nExecuting: Installing zenity"
+        sudo dnf install -y zenity  # Install Zenity if not already installed
         echo -e "Process Completed!\n"
     fi
 }
@@ -158,12 +158,6 @@ remove_bloatware () {
     sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app firefox totem
 }
 
-# Function to run after scripts completed
-clean_up () {
-    sudo dnf upgrade -y --refresh  # Upgrade all packages
-    sudo dnf autoremove -y  # Remove unnecessary packages
-}
-
 # Define custom text and corresponding multi-line commands as arrays
 custom_ops=(
     "Improve DNF Speed by updating conf file"
@@ -176,7 +170,6 @@ custom_ops=(
     "Installing GTK themes"
     "Installing OhMyBash"
     "Removing bloatware"
-    "Clean up unused packages"
 )
 
 # Define custom commands as function names
@@ -191,122 +184,89 @@ custom_commands=(
     "install_theme"
     "install_ohmybash"
     "remove_bloatware"
-    "clean_up"
 )
 
+# Define user DE
+user_de=("GNOME" "KDE")
+
 # Define the log file
-run_log="run_history.log"
 log_file="command_output.log"
 
 # Check if the log file exists and remove it if it does
-if [ -f "$run_log" ]; then
-    rm "$run_log"  # Remove the existing log file
-fi
-
 if [ -f "$log_file" ]; then
     rm "$log_file"  # Remove the existing log file
 fi
 
-# Function to show a form with checkboxes for command selection using YAD
-show_command_selection() {
-    yad_command=(yad --form --title="Select Commands to Run" --text="Please select the commands you want to run:" --separator="|" --width=500 --height=500)
-    for cmd in "${custom_ops[@]}"; do
-        yad_command+=(--field="$cmd:CHK")
-    done
-    "${yad_command[@]}"
-}
-
 # Function to handle Zenity dialogs
-yad_dialogs () {
-    local custom_ops=("${!1}")
-    local custom_commands=("${!2}")
-    local desktop_environment=$XDG_CURRENT_DESKTOP
+zenity_dialogs () {
+    local user_de=("${!1}")
+    local custom_ops=("${!2}")
+    local custom_commands=("${!3}")
 
     # Install flathub repository
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
+    # Select DE using Zenity
+    user_select_de=$(zenity --list --title="Select Your Desktop Environment" --column="DE" "${user_de[@]}" --width=500 --height=500 )
+
+    if [ -z "$user_select_de" ]; then
+        exit 1  # Exit if no DE was selected
+    fi
+
     # Modify commands for KDE
-    if [ "$desktop_environment" == "KDE" ]; then
+    if [ "$user_select_de" == "KDE" ]; then
         # Adjust commands for KDE environment
         # Remove setup_theme function for KDE
         unset 'custom_ops[7]'
         unset 'custom_commands[7]'
         custom_commands[6]=related_theme_kde
         custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
-    elif [ "$desktop_environment" != "GNOME" ]; then
-        echo "Error: Your desktop environment is not supported."
-        exit 1
     fi
 
-    # Show the form and capture the output
-    selected_indices=$(show_command_selection)
-
-    # Check if the user canceled the dialog
+    zenity --question --text="You have selected ${user_select_de} as your DE. Is this correct?" --ok-label="Yes" --cancel-label="No" --width=300 --height=150
     if [ $? -ne 0 ]; then
-        echo "No commands selected. Exiting."
-        exit 1
+        exit 1  # Exit if the DE selection is not confirmed
     fi
 
-    # Process the selected indices
-    IFS="|" read -r -a selected_flags <<< "$selected_indices"
+    # Add "Select All" option to custom_ops
+    custom_ops=("Select All" "${custom_ops[@]}")
 
-    # Extract the selected commands based on checkbox flags
-    selected_commands=()
-    for i in "${!selected_flags[@]}"; do
-        if [ "${selected_flags[i]}" == "TRUE" ]; then
-            selected_commands+=("${custom_ops[i]}")
-        fi
+    # Select commands to run using Zenity with multi-select option
+    selected_indices=$(zenity --list --title="Select Commands to Run: Multi Select using Ctrl + Alt" --column="Available commands" "${custom_ops[@]}" --multiple --width=500 --height=500)
+
+    if [ -z "$selected_indices" ]; then
+        zenity --error --text="No commands selected. Exiting." --width=300 --height=150
+        exit 1  # Exit if no commands are selected
+    fi
+
+    # Convert selected options to indices
+    IFS='|' read -ra indices <<< "$selected_indices"
+
+    # Check if "Select All" was chosen
+    if [[ " ${indices[@]} " =~ " Select All " ]]; then
+        indices=("${custom_ops[@]:1}")  # Select all options excluding "Select All"
+    fi
+
+    # Show selected options in an info message with commas separating them
+    joined_indices=$(printf "%s, " "${indices[@]}")
+    joined_indices="${joined_indices%, }"  # Remove the trailing comma and space
+    zenity --info --text="Your selected options: ${joined_indices}" --width=300 --height=150
+
+    # Execute selected commands
+    for selected_option in "${indices[@]}"; do
+        for ((i = 1; i < ${#custom_ops[@]}; i++)); do
+            if [ "${custom_ops[i]}" == "$selected_option" ]; then
+                echo -e "\nExecuting: ${custom_ops[i]}"
+                (${custom_commands[i-1]}) | tee -a "$log_file"  # Log the command output
+                echo -e "Process Completed!\n"
+            fi
+        done
     done
 
-    # Show selected options
-    if [ ${#selected_commands[@]} -eq 0 ]; then
-        yad --error --text="No commands selected. Exiting." --width=300 --height=150
-        exit 1
-    else
-        joined_indices=$(printf "%s, " "${selected_commands[@]}")
-        joined_indices="${joined_indices%, }"  # Remove the trailing comma and space
-        yad --info --text="Your selected options: ${joined_indices}" --width=300 --height=150
-    fi
+    sudo dnf upgrade -y --refresh  # Upgrade all packages
+    sudo dnf autoremove -y  # Remove unnecessary packages
 
-    total_commands=${#selected_commands[@]}
-    increment=$((100 / total_commands))
-    current_progress=0
-
-    # Start the progress bar
-    (
-        echo $current_progress
-        for selected_command in "${selected_commands[@]}"; do
-            for i in "${!custom_ops[@]}"; do
-                if [ "${custom_ops[i]}" == "$selected_command" ]; then
-                    echo -e "\nExecuting: ${custom_ops[i]}"
-
-                    # Log the operation
-                    echo "### ${custom_ops[i]}" >> "$run_log"
-                    
-                    # Execute the command and log the output
-                    eval "${custom_commands[i]}" | tee -a "$log_file"
-                    
-                    # Update the progress bar
-                    current_progress=$((current_progress + increment))
-                    echo $current_progress
-                fi
-            done
-        done
-        
-        # Ensure progress bar reaches 100%
-        echo 100
-    ) |
-    yad --progress \
-        --title="Setup Progress" \
-        --text="Please wait while executing all commands..." \
-        --percentage=0 \
-        --auto-close \
-        --auto-kill \
-        --width=400 --height=100
-
-    echo -e "All processes completed!\n"
-
-    yad --question --text="It is recommended to reboot. Reboot now?" --button="No:1" --button="Yes:0" --width=300 --height=150
+    zenity --question --text="It is recommended to reboot. Reboot now?" --ok-label="Yes" --cancel-label="No" --width=300 --height=150
     if [ $? -eq 0 ]; then
         reboot  # Reboot the system if the user agrees
     fi
@@ -315,6 +275,6 @@ yad_dialogs () {
 # Call the check distribution function
 check_distribution
 # Call the zenity check function
-check_yad
+check_zenity
 # Call the Zenity dialog function with arrays of custom text and multi-line commands
-yad_dialogs custom_ops[@] custom_commands[@]
+zenity_dialogs user_de[@] custom_ops[@] custom_commands[@]
