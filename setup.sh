@@ -91,7 +91,7 @@ related_theme_gnome () {
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
     # Enable pop-os extension
-    sudo dnf install -y gnome-shell-extension-pop-shell xprop
+    # sudo dnf install -y gnome-shell-extension-pop-shell xprop
     # Enable theme related apps
     sudo dnf install -y gnome-tweaks
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
@@ -207,15 +207,6 @@ if [ -f "$log_file" ]; then
     rm "$log_file"  # Remove the existing log file
 fi
 
-# Function to show a form with checkboxes for command selection using YAD
-show_command_selection() {
-    yad_command=(yad --form --title="Select Commands to Run" --text="Please select the commands you want to run:" --separator="|" --width=500 --height=500)
-    for cmd in "${custom_ops[@]}"; do
-        yad_command+=(--field="$cmd:CHK")
-    done
-    "${yad_command[@]}"
-}
-
 # Function to handle Zenity dialogs
 yad_dialogs () {
     local custom_ops=("${!1}")
@@ -229,17 +220,33 @@ yad_dialogs () {
     if [ "$desktop_environment" == "KDE" ]; then
         # Adjust commands for KDE environment
         # Remove setup_theme function for KDE
-        unset 'custom_ops[7]'
-        unset 'custom_commands[7]'
+        local hide_index=7
+        unset 'custom_ops[${hide_index}]'
+        unset 'custom_commands[${hide_index}]'
+        for ((i=${hide_index}; i<${#custom_ops[@]}-1; i++)); do
+            custom_ops[i]=${custom_ops[i+1]}
+        done
+        unset 'custom_ops[${#custom_ops[@]}-1]'
+        for ((i=${hide_index}; i<${#custom_commands[@]}-1; i++)); do
+            custom_commands[i]=${custom_commands[i+1]}
+        done
+        unset 'custom_commands[${#custom_commands[@]}-1]'
+
         custom_commands[6]=related_theme_kde
-        custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmag kmines kmahjongg kmousetool kmouth kpat kruler kamoso krdc krfb ktnef kaddressbook konversation kf5-akonadi-server mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     elif [ "$desktop_environment" != "GNOME" ]; then
         echo "Error: Your desktop environment is not supported."
         exit 1
     fi
 
     # Show the form and capture the output
-    selected_indices=$(show_command_selection)
+    selected_indices=$(
+        yad_command=(yad --form --title="Select Commands to Run" --text="Please select the commands you want to run:" --separator="|" --width=500 --height=500)
+        for cmd in "${custom_ops[@]}"; do
+            yad_command+=(--field="$cmd:CHK")
+        done
+        "${yad_command[@]}"
+    )
 
     # Check if the user canceled the dialog
     if [ $? -ne 0 ]; then
