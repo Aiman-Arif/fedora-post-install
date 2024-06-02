@@ -63,7 +63,7 @@ install_media_codecs () {
 # Function to install commonly used applications
 install_commonly_used_apps () {
     # Install applications via DNF and Flatpak
-    sudo dnf install -y fastfetch vlc cascadia-code-nf-fonts
+    sudo dnf install -y fastfetch vlc
     flatpak install -y one.ablaze.floorp net.nokyan.Resources
 }
 
@@ -91,7 +91,7 @@ related_theme_gnome () {
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
     # Enable pop-os extension
-    # sudo dnf install -y gnome-shell-extension-pop-shell xprop
+    sudo dnf install -y gnome-shell-extension-pop-shell xprop
     # Enable theme related apps
     sudo dnf install -y gnome-tweaks
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
@@ -198,15 +198,6 @@ custom_commands=(
 run_log="run_history.log"
 log_file="command_output.log"
 
-# Check if the log file exists and remove it if it does
-if [ -f "$run_log" ]; then
-    rm "$run_log"  # Remove the existing log file
-fi
-
-if [ -f "$log_file" ]; then
-    rm "$log_file"  # Remove the existing log file
-fi
-
 # Function to handle Zenity dialogs
 yad_dialogs () {
     local custom_ops=("${!1}")
@@ -274,42 +265,30 @@ yad_dialogs () {
         joined_indices="${joined_indices%, }"  # Remove the trailing comma and space
         yad --info --text="Your selected options: ${joined_indices}" --width=300 --height=150
     fi
+    
+    
+    # Check if the log file exists and remove it if it does
+    if [ -f "$run_log" ]; then
+        rm "$run_log"  # Remove the existing log file
+    fi
 
-    total_commands=${#selected_commands[@]}
-    increment=$((100 / total_commands))
-    current_progress=0
+    if [ -f "$log_file" ]; then
+	    rm "$log_file"  # Remove the existing log file
+    fi
+	
+    # Execute selected commands
+    for selected_option in "${selected_commands[@]}"; do
+        for i in "${!custom_ops[@]}"; do
+            if [ "${custom_ops[i]}" == "$selected_option" ]; then
+                echo -e "\nExecuting: ${custom_ops[i]}"
 
-    # Start the progress bar
-    (
-        echo $current_progress
-        for selected_command in "${selected_commands[@]}"; do
-            for i in "${!custom_ops[@]}"; do
-                if [ "${custom_ops[i]}" == "$selected_command" ]; then
-                    echo -e "\nExecuting: ${custom_ops[i]}"
+		        echo "### ${custom_ops[i]}" >> "$run_log" # Log the operation
+                (${custom_commands[i]}) | tee -a "$log_file"  # Log the command output
 
-                    # Log the operation
-                    echo "### ${custom_ops[i]}" >> "$run_log"
-                    
-                    # Execute the command and log the output
-                    eval "${custom_commands[i]}" | tee -a "$log_file"
-                    
-                    # Update the progress bar
-                    current_progress=$((current_progress + increment))
-                    echo $current_progress
-                fi
-            done
+                echo -e "Process Completed!\n"
+            fi
         done
-        
-        # Ensure progress bar reaches 100%
-        echo 100
-    ) |
-    yad --progress \
-        --title="Setup Progress" \
-        --text="Please wait while executing all commands..." \
-        --percentage=0 \
-        --auto-close \
-        --auto-kill \
-        --width=400 --height=100
+    done
 
     echo -e "All processes completed!\n"
 
