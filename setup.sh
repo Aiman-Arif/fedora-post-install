@@ -321,7 +321,7 @@ yad_dialogs () {
 
 # Call the check distribution function
 check_distribution
-# Call the zenity check function
+# Call the yad check function
 check_yad
-# Call the Zenity dialog function with arrays of custom text and multi-line commands
+# Call the yad dialog function with arrays of custom text and multi-line commands
 yad_dialogs custom_ops[@] custom_commands[@]
