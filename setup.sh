@@ -150,6 +150,8 @@ install_ohmybash () {
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
     cd ~/
     rm -rf fonts
+    sudo dnf copr enable -y atim/zoxide
+    sudo dnf install -y zoxide
 }
 
 # Function to remove bloatware
