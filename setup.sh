@@ -90,8 +90,6 @@ related_theme_gnome () {
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    # Enable pop-os extension
-    sudo dnf install -y gnome-shell-extension-pop-shell xprop
     # Enable theme related apps
     sudo dnf install -y gnome-tweaks
     flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
