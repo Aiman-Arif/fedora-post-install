@@ -1,5 +1,7 @@
 #!/bin/bash
 
+current_dir=$(pwd)
+
 # Function to check if the distribution is Fedora
 check_distribution() {
     if [ -f /etc/os-release ]; then
@@ -11,15 +13,6 @@ check_distribution() {
     else
         echo "Error: /etc/os-release not found. Cannot determine distribution."
         exit 1
-    fi
-}
-
-# Function to check if DNF5 is installed
-check_dnf5() {
-    if ! command -v dnf5 &> /dev/null; then
-        echo -e "\nExecuting: Installing DNF5"
-        sudo dnf install -y dnf5  # Install DNF5 if not already installed
-        echo -e "Process Completed!\n"
     fi
 }
 
@@ -268,10 +261,6 @@ yad_dialogs () {
     if [ ${#selected_commands[@]} -eq 0 ]; then
         yad --error --text="No commands selected. Exiting." --width=300 --height=150
         exit 1
-    else
-        joined_indices=$(printf "%s, " "${selected_commands[@]}")
-        joined_indices="${joined_indices%, }"  # Remove the trailing comma and space
-        yad --info --text="Your selected options: ${joined_indices}" --width=300 --height=150
     fi
     
     
@@ -288,7 +277,7 @@ yad_dialogs () {
 
                 eval "${custom_commands[i]}"
 
-                cd ~/fedora-gnome-post-install
+                cd "$current_dir"
 		        echo "### ${custom_ops[i]}" >> "$run_log" # Log the operation
 
                 echo -e "Process Completed!\n"
@@ -306,8 +295,6 @@ yad_dialogs () {
 
 # Call the check distribution function
 check_distribution
-# Call the DNF5 check function
-check_dnf5
 # Call the yad check function
 check_yad
 # Call the yad dialog function with arrays of custom text and multi-line commands
