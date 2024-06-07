@@ -121,18 +121,18 @@ related_theme_kde () {
 # Function to install themes
 install_theme () {
     # Install and configure GTK theme
-    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine
     cd ~/
-    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
-    cd Colloid-gtk-theme
-    ./install.sh --tweaks gruvbox rimless float
-    ./install.sh --tweaks gruvbox rimless float -c dark -l
+    git clone https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
+    cd Gruvbox-GTK-Theme/themes
+    ./install.sh -t red --tweaks soft float macos
+    ./install.sh -t red --tweaks soft float macos -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
     # Install Papirus folder icon theme
     wget -qO- https://git.io/papirus-folders-install | sh
-    papirus-folders -C nordic --theme Papirus-Dark
+    papirus-folders -C red --theme Papirus-Dark
 }
 
 # Function to install ohmybash
