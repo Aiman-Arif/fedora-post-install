@@ -14,6 +14,15 @@ check_distribution() {
     fi
 }
 
+# Function to check if DNF5 is installed
+check_dnf5() {
+    if ! command -v dnf5 &> /dev/null; then
+        echo -e "\nExecuting: Installing DNF5"
+        sudo dnf install -y dnf5  # Install DNF5 if not already installed
+        echo -e "Process Completed!\n"
+    fi
+}
+
 # Function to check if YAD is installed
 check_yad() {
     if ! command -v yad &> /dev/null; then
@@ -196,7 +205,6 @@ custom_commands=(
 
 # Define the log file
 run_log="run_history.log"
-log_file="command_output.log"
 
 # Function to handle Zenity dialogs
 yad_dialogs () {
@@ -271,10 +279,6 @@ yad_dialogs () {
     if [ -f "$run_log" ]; then
         rm "$run_log"  # Remove the existing log file
     fi
-
-    if [ -f "$log_file" ]; then
-	    rm "$log_file"  # Remove the existing log file
-    fi
 	
     # Execute selected commands
     for selected_option in "${selected_commands[@]}"; do
@@ -282,8 +286,10 @@ yad_dialogs () {
             if [ "${custom_ops[i]}" == "$selected_option" ]; then
                 echo -e "\nExecuting: ${custom_ops[i]}"
 
+                eval "${custom_commands[i]}"
+
+                cd ~/fedora-gnome-post-install
 		        echo "### ${custom_ops[i]}" >> "$run_log" # Log the operation
-                (${custom_commands[i]}) | tee -a "$log_file"  # Log the command output
 
                 echo -e "Process Completed!\n"
             fi
@@ -300,6 +306,8 @@ yad_dialogs () {
 
 # Call the check distribution function
 check_distribution
+# Call the DNF5 check function
+check_dnf5
 # Call the yad check function
 check_yad
 # Call the yad dialog function with arrays of custom text and multi-line commands
