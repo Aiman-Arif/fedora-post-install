@@ -66,7 +66,7 @@ install_media_codecs () {
 install_commonly_used_apps () {
     # Install applications via DNF and Flatpak
     sudo dnf install -y fastfetch vlc
-    flatpak install -y one.ablaze.floorp net.nokyan.Resources
+    flatpak install -y one.ablaze.floorp net.nokyan.Resources org.gnome.gThumb
 }
 
 # Function to install personal applications for Aiman
