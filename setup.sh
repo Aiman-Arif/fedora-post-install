@@ -137,6 +137,17 @@ install_theme () {
     papirus-folders -C grey --theme Papirus-Dark
 }
 
+# Function to remove themes
+remove_theme () {
+    cd ~/.themes
+    rm -rf ./Colloid*
+    cd ~/.config/gtk-4.0
+    rm -rf ./*
+    cd /usr/share/themes
+    sudo rm -rf ./Colloid*
+    cd ~/
+}
+
 # Function to install ohmybash
 install_ohmybash () {
     cd ~/.local/share
@@ -176,6 +187,7 @@ custom_ops=(
     "Installing personal apps for Aiman"
     "Installing theme related apps"
     "Installing GTK themes"
+    "Removing GTK themes"
     "Installing OhMyBash"
     "Removing bloatware"
     "Clean up unused packages"
@@ -191,6 +203,7 @@ custom_commands=(
     "personal_apps"
     "related_theme_gnome"
     "install_theme"
+    "remove_theme"
     "install_ohmybash"
     "remove_bloatware"
     "clean_up"
@@ -212,6 +225,18 @@ yad_dialogs () {
     if [ "$desktop_environment" == "KDE" ]; then
         # Adjust commands for KDE environment
         # Remove setup_theme function for KDE
+        local hide_index=7
+        unset 'custom_ops[${hide_index}]'
+        unset 'custom_commands[${hide_index}]'
+        for ((i=${hide_index}; i<${#custom_ops[@]}-1; i++)); do
+            custom_ops[i]=${custom_ops[i+1]}
+        done
+        unset 'custom_ops[${#custom_ops[@]}-1]'
+        for ((i=${hide_index}; i<${#custom_commands[@]}-1; i++)); do
+            custom_commands[i]=${custom_commands[i+1]}
+        done
+        unset 'custom_commands[${#custom_commands[@]}-1]'
+
         local hide_index=7
         unset 'custom_ops[${hide_index}]'
         unset 'custom_commands[${hide_index}]'
