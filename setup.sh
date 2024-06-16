@@ -127,14 +127,14 @@ install_theme () {
     cd ~/
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    ./install.sh -t grey --tweaks gruvbox rimless float
-    ./install.sh -t grey --tweaks gruvbox rimless float -c dark -l
+    ./install.sh -t purple --tweaks catppuccin rimless float
+    ./install.sh -t purple --tweaks catppuccin rimless float -c dark -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
     # Install Papirus folder icon theme
-    wget -qO- https://git.io/papirus-folders-install | sh
-    papirus-folders -C grey --theme Papirus-Dark
+    # wget -qO- https://git.io/papirus-folders-install | sh
+    # papirus-folders -C grey --theme Papirus-Dark
 }
 
 # Function to remove themes
