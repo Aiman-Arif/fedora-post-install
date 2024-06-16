@@ -66,7 +66,7 @@ install_media_codecs () {
 install_commonly_used_apps () {
     # Install applications via DNF and Flatpak
     sudo dnf install -y fastfetch vlc
-    flatpak install -y one.ablaze.floorp net.nokyan.Resources org.gnome.gThumb
+    flatpak install -y net.nokyan.Resources org.gnome.gThumb
 }
 
 # Function to install personal applications for Aiman
@@ -168,7 +168,7 @@ install_ohmybash () {
 # Function to remove bloatware
 remove_bloatware () {
     # Remove unwanted applications
-    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app firefox totem
+    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app totem
 }
 
 # Function to run after scripts completed
@@ -250,7 +250,7 @@ yad_dialogs () {
         unset 'custom_commands[${#custom_commands[@]}-1]'
 
         custom_commands[6]=related_theme_kde
-        custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat"
     elif [ "$desktop_environment" != "GNOME" ]; then
         echo "Error: Your desktop environment is not supported."
         exit 1
