@@ -127,8 +127,8 @@ install_theme () {
     cd ~/
     git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    ./install.sh -t purple --tweaks catppuccin rimless float
-    ./install.sh -t purple --tweaks catppuccin rimless float -c dark -l
+    ./install.sh -t purple --tweaks catppuccin black rimless float
+    ./install.sh -t purple --tweaks catppuccin black rimless float -c dark -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
