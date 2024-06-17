@@ -133,8 +133,12 @@ install_theme () {
     sudo cp -r ./. /usr/share/themes
     cd ~/
     # Install Papirus folder icon theme
-    # wget -qO- https://git.io/papirus-folders-install | sh
-    # papirus-folders -C grey --theme Papirus-Dark
+    git clone https://github.com/catppuccin/papirus-folders.git
+    cd papirus-folders
+    sudo cp -r src/* /usr/share/icons/Papirus
+    curl -LO https://raw.githubusercontent.com/PapirusDevelopmentTeam/papirus-folders/master/papirus-folders && chmod +x ./papirus-folders
+    ./papirus-folders -C cat-mocha-mauve --theme Papirus-Dark
+    cd ~/
 }
 
 # Function to remove themes
