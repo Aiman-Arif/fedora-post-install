@@ -95,6 +95,11 @@ install_ohmybash () {
     cd ~/.local/share
     mkdir fonts
     cd ~/
+    git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git
+    cd ~/nerd-fonts
+    ./install.sh FiraCode
+    cd ~/
+    rmdir -rf FiraCode
     # Install OhMyBash
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
     sudo dnf copr enable -y atim/zoxide

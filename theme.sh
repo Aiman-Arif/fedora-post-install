@@ -46,23 +46,23 @@ install_bibata_cursor () {
 install_gruvbox_theme () {
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
     cd ~/
-    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
+    git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    ./install.sh -t purple --tweaks gruvbox black rimless float
-    ./install.sh -t purple --tweaks gruvbox black rimless float -c dark -l
+    ./install.sh -t grey --tweaks gruvbox black rimless float
+    ./install.sh -t grey --tweaks gruvbox black rimless float -c dark -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
     # Install Papirus folder icon theme
     wget -qO- https://git.io/papirus-folders-install | sh
-    papirus-folders -C magenta--theme Papirus-Dark
+    papirus-folders -C grey --theme Papirus-Dark
 }
 
 # Function to install Catppuccin themes
 install_catppuccin_theme () {
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
     cd ~/
-    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
+    git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
     ./install.sh -t purple --tweaks catppuccin black rimless float
     ./install.sh -t purple --tweaks catppuccin black rimless float -c dark -l
@@ -70,7 +70,7 @@ install_catppuccin_theme () {
     sudo cp -r ./. /usr/share/themes
     cd ~/
     # Install Papirus folder icon theme
-    git clone https://github.com/catppuccin/papirus-folders.git
+    git clone --depth 1 https://github.com/catppuccin/papirus-folders.git
     cd papirus-folders
     sudo cp -r src/* /usr/share/icons/Papirus
     cd ~/
