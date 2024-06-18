@@ -87,6 +87,8 @@ remove_themes () {
     cd /usr/share/themes
     sudo rm -rf ./Colloid*
     cd ~/
+    install_papirus_icon
+    install_bibata_cursor
 }
 
 # GNOME options
