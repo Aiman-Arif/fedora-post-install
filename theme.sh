@@ -91,30 +91,19 @@ remove_themes () {
     install_bibata_cursor
 }
 
-# GNOME options
-custom_ops_gnome=(
+custom_ops=(
     "Install Papirus icon"
     "Install Bibata cursor"
     "Install Gruvbox GTK themes"
     "Install Catppuccin GTK themes"
     "Remove all GTK themes"
 )
-custom_commands_gnome=(
+custom_commands=(
     "install_papirus_icon"
     "install_bibata_cursor"
     "install_gruvbox_theme"
     "install_catppuccin_theme"
     "remove_themes"
-)
-
-# KDE options
-custom_ops_kde=(
-    "Install Papirus icon"
-    "Install Bibata cursor"
-)
-custom_commands_kde=(
-    "install_papirus_icon"
-    "install_bibata_cursor"
 )
 
 # Define the log file
@@ -138,11 +127,7 @@ yad_dialogs () {
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
 
-    # Modify commands for KDE
-    if [ "$desktop_environment" == "KDE" ]; then
-        custom_ops=("${custom_ops_kde[@]}")
-        custom_commands=("${custom_commands_kde[@]}")
-    elif [ "$desktop_environment" != "GNOME" ]; then
+    if [ "$desktop_environment" != "GNOME" ]; then
         echo "Error: Your desktop environment is not supported."
         exit 1
     fi
@@ -209,4 +194,4 @@ check_distribution
 # Call the yad check function
 check_yad
 # Call the yad dialog function with arrays of custom text and multi-line commands
-yad_dialogs custom_ops_gnome[@] custom_commands_gnome[@]
+yad_dialogs custom_ops[@] custom_commands[@]

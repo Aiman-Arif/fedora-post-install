@@ -94,15 +94,9 @@ personal_apps () {
 install_ohmybash () {
     cd ~/.local/share
     mkdir fonts
-    # Install required fonts
     cd ~/
-    git clone https://github.com/powerline/fonts.git
-    cd fonts
-    ./install.sh
     # Install OhMyBash
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-    cd ~/
-    rm -rf fonts
     sudo dnf copr enable -y atim/zoxide
     sudo dnf install -y zoxide
 }
