@@ -62,11 +62,17 @@ install_media_codecs () {
     sudo dnf group upgrade -y --with-optional Multimedia
 }
 
-# Function to install commonly used applications
-install_commonly_used_apps () {
+# Function to install commonly used applications for GNOME
+install_commonly_used_apps_gnome () {
     # Install applications via DNF and Flatpak
+    sudo dnf install -y fastfetch vlc gnome-tweaks
+    flatpak install -y net.nokyan.Resources io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
+}
+
+# Function to install commonly used applications for KDE
+install_commonly_used_apps_kde () {
+    # Install applications via DNF
     sudo dnf install -y fastfetch vlc
-    flatpak install -y net.nokyan.Resources org.gnome.gThumb
 }
 
 # Function to install personal applications for Aiman
@@ -80,76 +86,8 @@ personal_apps () {
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
     sudo dnf install -y unzip p7zip p7zip-plugins unrar code
-    flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop org.telegram.desktop
+    flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop org.telegram.desktop org.gnome.gThumb
     flatpak install -y moe.launcher.the-honkers-railway-launcher
-}
-
-# Function to install theme related apps for GNOME
-related_theme_gnome () {
-    # Override Flatpak filesystem permissions
-    cd ~/
-    mkdir .themes .icons
-    sudo flatpak override --filesystem=$HOME/.themes
-    sudo flatpak override --filesystem=$HOME/.icons
-    sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    # Enable theme related apps
-    sudo dnf install -y gnome-tweaks
-    flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
-    # Install Bibata cursor theme
-    sudo dnf copr enable -y peterwu/rendezvous
-    sudo dnf install -y bibata-cursor-themes
-    # Install Papirus icon theme
-    wget -qO- https://git.io/papirus-icon-theme-install | sh
-    # Set themes
-    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
-    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
-}
-
-# Function to install theme related apps for KDE
-related_theme_kde () {
-    # Override Flatpak filesystem permissions
-    cd ~/
-    mkdir .themes .icons
-    sudo flatpak override --filesystem=$HOME/.themes
-    sudo flatpak override --filesystem=$HOME/.icons
-    sudo flatpak override --filesystem=xdg-config/gtk-4.0
-    # Install Bibata cursor theme
-    sudo dnf copr enable -y peterwu/rendezvous
-    sudo dnf install -y bibata-cursor-themes
-    # Install Papirus icon theme
-    wget -qO- https://git.io/papirus-icon-theme-install | sh
-}
-
-# Function to install themes
-install_theme () {
-    # Install and configure GTK theme
-    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
-    cd ~/
-    git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
-    cd Colloid-gtk-theme
-    ./install.sh -t purple --tweaks catppuccin black rimless float
-    ./install.sh -t purple --tweaks catppuccin black rimless float -c dark -l
-    cd ~/.themes
-    sudo cp -r ./. /usr/share/themes
-    cd ~/
-    # Install Papirus folder icon theme
-    git clone https://github.com/catppuccin/papirus-folders.git
-    cd papirus-folders
-    sudo cp -r src/* /usr/share/icons/Papirus
-    curl -LO https://raw.githubusercontent.com/PapirusDevelopmentTeam/papirus-folders/master/papirus-folders && chmod +x ./papirus-folders
-    ./papirus-folders -C cat-mocha-mauve --theme Papirus-Dark
-    cd ~/
-}
-
-# Function to remove themes
-remove_theme () {
-    cd ~/.themes
-    rm -rf ./Colloid*
-    cd ~/.config/gtk-4.0
-    rm -rf ./*
-    cd /usr/share/themes
-    sudo rm -rf ./Colloid*
-    cd ~/
 }
 
 # Function to install ohmybash
@@ -184,16 +122,13 @@ clean_up () {
 # Define custom text and corresponding multi-line commands as arrays
 custom_ops=(
     "Improve DNF Speed by updating conf file"
-    "Adding RPM Fusion"
-    "Updating firmware"
-    "Installing media codecs"
-    "Installing commonly used apps"
-    "Installing personal apps for Aiman"
-    "Installing theme related apps"
-    "Installing GTK themes"
-    "Removing GTK themes"
-    "Installing OhMyBash"
-    "Removing bloatware"
+    "Add RPM Fusion"
+    "Update firmware"
+    "Install media codecs"
+    "Install commonly used apps"
+    "Install personal apps for Aiman"
+    "Install OhMyBash"
+    "Remove bloatware"
     "Clean up unused packages"
 )
 
@@ -203,18 +138,15 @@ custom_commands=(
     "add_rpm_fusion"
     "update_firmware"
     "install_media_codecs"
-    "install_commonly_used_apps"
+    "install_commonly_used_apps_gnome"
     "personal_apps"
-    "related_theme_gnome"
-    "install_theme"
-    "remove_theme"
     "install_ohmybash"
     "remove_bloatware"
     "clean_up"
 )
 
 # Define the log file
-run_log="run_history.log"
+run_log="run_history_setup.log"
 
 # Function to handle Zenity dialogs
 yad_dialogs () {
@@ -227,34 +159,8 @@ yad_dialogs () {
 
     # Modify commands for KDE
     if [ "$desktop_environment" == "KDE" ]; then
-        # Adjust commands for KDE environment
-        # Remove setup_theme function for KDE
-        local hide_index=7
-        unset 'custom_ops[${hide_index}]'
-        unset 'custom_commands[${hide_index}]'
-        for ((i=${hide_index}; i<${#custom_ops[@]}-1; i++)); do
-            custom_ops[i]=${custom_ops[i+1]}
-        done
-        unset 'custom_ops[${#custom_ops[@]}-1]'
-        for ((i=${hide_index}; i<${#custom_commands[@]}-1; i++)); do
-            custom_commands[i]=${custom_commands[i+1]}
-        done
-        unset 'custom_commands[${#custom_commands[@]}-1]'
-
-        local hide_index=7
-        unset 'custom_ops[${hide_index}]'
-        unset 'custom_commands[${hide_index}]'
-        for ((i=${hide_index}; i<${#custom_ops[@]}-1; i++)); do
-            custom_ops[i]=${custom_ops[i+1]}
-        done
-        unset 'custom_ops[${#custom_ops[@]}-1]'
-        for ((i=${hide_index}; i<${#custom_commands[@]}-1; i++)); do
-            custom_commands[i]=${custom_commands[i+1]}
-        done
-        unset 'custom_commands[${#custom_commands[@]}-1]'
-
-        custom_commands[6]=related_theme_kde
-        custom_commands[8]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat"
+        custom_commands[4]=install_commonly_used_apps_kde
+        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat"
     elif [ "$desktop_environment" != "GNOME" ]; then
         echo "Error: Your desktop environment is not supported."
         exit 1
@@ -307,17 +213,17 @@ yad_dialogs () {
                 eval "${custom_commands[i]}"
 
                 cd "$current_dir"
-		        echo "### ${custom_ops[i]}" >> "$run_log" # Log the operation
+		        echo "✓ ${custom_ops[i]}" >> "$run_log" # Log the operation
 
                 echo -e "Process Completed!\n"
             fi
         done
     done
 
-    echo -e "All processes completed!\n"
+    echo -e "○○○○○ All processes completed! Exiting now! ○○○○○\n"
 
-    yad --question --text="It is recommended to reboot. Reboot now?" --button="No:1" --button="Yes:0" --width=300 --height=150
-    if [ $? -eq 0 ]; then
+    yad --question --text="It is recommended to reboot. Reboot now?" --button="No:0" --button="Yes:1" --width=300 --height=150
+    if [ $? -eq 1 ]; then
         reboot  # Reboot the system if the user agrees
     fi
 }

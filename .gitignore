@@ -1,3 +1,3 @@
 # Ignore log files
-run_history.log
-command_output.log
+run_history_setup.log
+run_history_theme.log
