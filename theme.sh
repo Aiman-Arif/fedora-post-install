@@ -48,14 +48,14 @@ install_gruvbox_theme () {
     cd ~/
     git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    ./install.sh -t grey --tweaks gruvbox black rimless float
-    ./install.sh -t grey --tweaks gruvbox black rimless float -c dark -l
+    ./install.sh --tweaks gruvbox rimless float
+    ./install.sh --tweaks gruvbox rimless float -c dark -l
     cd ~/.themes
     sudo cp -r ./. /usr/share/themes
     cd ~/
     # Install Papirus folder icon theme
     wget -qO- https://git.io/papirus-folders-install | sh
-    papirus-folders -C grey --theme Papirus-Dark
+    papirus-folders -C nordic --theme Papirus-Dark
 }
 
 # Function to install Catppuccin themes
