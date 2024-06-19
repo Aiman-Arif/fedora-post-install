@@ -51,13 +51,13 @@ install_dracula_theme () {
     sudo ./install.sh --tweaks dracula rimless float
     sudo ./install.sh --tweaks dracula rimless float -c dark -l
     cd ~/
-    rmdir -rf Colloid-gtk-theme
+    rm -rf Colloid-gtk-theme
     # Install Papirus folder icon theme
     git clone --depth 1 https://github.com/vinceliuice/Colloid-icon-theme.git
     cd Colloid-icon-theme
     sudo ./install.sh -s dracula -t purple
     cd ~/
-    rmdir -rf Colloid-icon-theme
+    rm -rf Colloid-icon-theme
 }
 
 # Function to install Gruvbox themes
