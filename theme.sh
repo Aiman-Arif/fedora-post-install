@@ -42,6 +42,24 @@ install_bibata_cursor () {
     gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
 }
 
+# Function to install Dracula themes
+install_dracula_theme () {
+    sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
+    cd ~/
+    git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
+    cd Colloid-gtk-theme
+    sudo ./install.sh --tweaks dracula rimless float
+    sudo ./install.sh --tweaks dracula rimless float -c dark -l
+    cd ~/
+    rmdir -rf Colloid-gtk-theme
+    # Install Papirus folder icon theme
+    git clone --depth 1 https://github.com/vinceliuice/Colloid-icon-theme.git
+    cd Colloid-icon-theme
+    sudo ./install.sh -s dracula -t purple
+    cd ~/
+    rmdir -rf Colloid-icon-theme
+}
+
 # Function to install Gruvbox themes
 install_gruvbox_theme () {
     sudo dnf install -y gnome-themes-extra gtk-murrine-engine sassc
@@ -87,13 +105,12 @@ remove_themes () {
     cd /usr/share/themes
     sudo rm -rf ./Colloid*
     cd ~/
-    install_papirus_icon
-    install_bibata_cursor
 }
 
 custom_ops=(
     "Install Papirus icon"
     "Install Bibata cursor"
+    "Install Dracula GTK themes (includes icon)"
     "Install Gruvbox GTK themes"
     "Install Catppuccin GTK themes"
     "Remove all GTK themes"
@@ -101,6 +118,7 @@ custom_ops=(
 custom_commands=(
     "install_papirus_icon"
     "install_bibata_cursor"
+    "install_dracula_theme"
     "install_gruvbox_theme"
     "install_catppuccin_theme"
     "remove_themes"
@@ -115,22 +133,15 @@ yad_dialogs () {
     local custom_commands=("${!2}")
     local desktop_environment=$XDG_CURRENT_DESKTOP
 
-    # Install flathub repository
-    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
-    cd ~/
-    mkdir .themes .icons
-    cd "$current_dir"
+    if [ "$desktop_environment" != "GNOME" ]; then
+        echo "Error: Your desktop environment is not supported."
+        exit 1
+    fi
 
     # Override Flatpak filesystem permissions
     sudo flatpak override --filesystem=$HOME/.themes
     sudo flatpak override --filesystem=$HOME/.icons
     sudo flatpak override --filesystem=xdg-config/gtk-4.0
-
-    if [ "$desktop_environment" != "GNOME" ]; then
-        echo "Error: Your desktop environment is not supported."
-        exit 1
-    fi
 
     # Show the form and capture the output
     selected_indices=$(
