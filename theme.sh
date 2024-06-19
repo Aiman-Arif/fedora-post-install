@@ -49,15 +49,17 @@ install_dracula_theme () {
     git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
     sudo ./install.sh --tweaks dracula rimless float
-    sudo ./install.sh --tweaks dracula rimless float -c dark -l
+    ./install.sh --tweaks dracula rimless float -c dark -l
     cd ~/
     rm -rf Colloid-gtk-theme
     # Install Papirus folder icon theme
-    git clone --depth 1 https://github.com/vinceliuice/Colloid-icon-theme.git
-    cd Colloid-icon-theme
-    sudo ./install.sh -s dracula -t purple
+    git clone https://github.com/dracula/papirus-folders
+    cd papirus-folders
+    sudo cp -r Icons/* /usr/share/icons/Papirus
     cd ~/
-    rm -rf Colloid-icon-theme
+    wget -qO- https://git.io/papirus-folders-install | sh
+    papirus-folders -C dracula-dark --theme Papirus
+    rm -rf papirus-folders
 }
 
 # Function to install Gruvbox themes
@@ -110,9 +112,9 @@ remove_themes () {
 custom_ops=(
     "Install Papirus icon"
     "Install Bibata cursor"
-    "Install Dracula GTK themes (includes icon)"
-    "Install Gruvbox GTK themes"
-    "Install Catppuccin GTK themes"
+    "Install Dracula GTK theme (required Papirus icon)"
+    "Install Gruvbox GTK theme (required Papirus icon)"
+    "Install Catppuccin GTK theme (required Papirus icon)"
     "Remove all GTK themes"
 )
 custom_commands=(
