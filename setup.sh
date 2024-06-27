@@ -204,22 +204,23 @@ yad_dialogs () {
     fi
 	
     # Execute selected commands
-    for selected_option in "${selected_commands[@]}"; do
-        for i in "${!custom_ops[@]}"; do
-            if [ "${custom_ops[i]}" == "$selected_option" ]; then
-                echo -e "\nExecuting: ${custom_ops[i]}"
+    for i in "${!selected_commands[@]}"; do
+        local currect_commands_index=$(($i + 1))
+        for j in "${!custom_ops[@]}"; do
+            if [ "${custom_ops[j]}" == "${selected_commands[i]}" ]; then
+                echo -e "\nExecuting [${currect_commands_index}/${#selected_commands[@]}]: ${custom_ops[j]}"
 
-                eval "${custom_commands[i]}"
+                eval "${custom_commands[j]}"
 
                 cd "$current_dir"
-		        echo "✓ ${custom_ops[i]}" >> "$run_log" # Log the operation
+		        echo "[${currect_commands_index}] ${custom_ops[j]}" >> "$run_log" # Log the operation
 
-                echo -e "Process Completed!\n"
+                break
             fi
         done
     done
 
-    echo -e "○○○○○ All processes completed! Exiting now! ○○○○○\n"
+    echo -e "○○○○○ All processes completed! Total commands run: [${#selected_commands[@]}] ○○○○○\n"
 
     yad --question --text="It is recommended to reboot. Reboot now?" --button="No:0" --button="Yes:1" --width=300 --height=150
     if [ $? -eq 1 ]; then
