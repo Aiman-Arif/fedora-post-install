@@ -52,6 +52,7 @@ install_dracula_theme () {
     ./install.sh --tweaks dracula rimless float -c dark -l
     cd ~/
     rm -rf Colloid-gtk-theme
+    gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Dark-Dracula"
     # Install Papirus folder icon theme
     git clone https://github.com/dracula/papirus-folders
     cd papirus-folders
@@ -68,11 +69,11 @@ install_gruvbox_theme () {
     cd ~/
     git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    ./install.sh --tweaks gruvbox rimless float
+    sudo ./install.sh --tweaks gruvbox rimless float
     ./install.sh --tweaks gruvbox rimless float -c dark -l
-    cd ~/.themes
-    sudo cp -r ./. /usr/share/themes
     cd ~/
+    rm -rf Colloid-gtk-theme
+    gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Dark-Gruvbox"
     # Install Papirus folder icon theme
     wget -qO- https://git.io/papirus-folders-install | sh
     papirus-folders -C nordic --theme Papirus-Dark
@@ -84,11 +85,11 @@ install_catppuccin_theme () {
     cd ~/
     git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    ./install.sh -t purple --tweaks catppuccin black rimless float
+    sudo ./install.sh -t purple --tweaks catppuccin black rimless float
     ./install.sh -t purple --tweaks catppuccin black rimless float -c dark -l
-    cd ~/.themes
-    sudo cp -r ./. /usr/share/themes
     cd ~/
+    rm -rf Colloid-gtk-theme
+    gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Purple-Dark-Catppuccin"
     # Install Papirus folder icon theme
     git clone --depth 1 https://github.com/catppuccin/papirus-folders.git
     cd papirus-folders
@@ -107,6 +108,7 @@ remove_themes () {
     cd /usr/share/themes
     sudo rm -rf ./Colloid*
     cd ~/
+    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
 }
 
 custom_ops=(
@@ -117,6 +119,7 @@ custom_ops=(
     "Install Catppuccin GTK theme (required Papirus icon)"
     "Remove all GTK themes"
 )
+
 custom_commands=(
     "install_papirus_icon"
     "install_bibata_cursor"
