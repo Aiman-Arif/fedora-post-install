@@ -66,13 +66,14 @@ install_media_codecs () {
 install_commonly_used_apps_gnome () {
     # Install applications via DNF and Flatpak
     sudo dnf install -y fastfetch vlc gnome-tweaks
-    flatpak install -y net.nokyan.Resources io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
+    flatpak install -y one.ablaze.floorp net.nokyan.Resources io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
 }
 
 # Function to install commonly used applications for KDE
 install_commonly_used_apps_kde () {
     # Install applications via DNF
     sudo dnf install -y fastfetch vlc
+    flatpak install -y one.ablaze.floorp
 }
 
 # Function to install personal applications for Aiman
@@ -109,7 +110,7 @@ install_ohmybash () {
 # Function to remove bloatware
 remove_bloatware () {
     # Remove unwanted applications
-    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app totem
+    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app totem firefox
 }
 
 # Function to run after scripts completed
@@ -159,7 +160,7 @@ yad_dialogs () {
     # Modify commands for KDE
     if [ "$desktop_environment" == "KDE" ]; then
         custom_commands[4]=install_commonly_used_apps_kde
-        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat"
+        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     elif [ "$desktop_environment" != "GNOME" ]; then
         echo "Error: Your desktop environment is not supported."
         exit 1
