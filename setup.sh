@@ -91,6 +91,16 @@ personal_apps () {
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
+# Function to install personal extensions for Aiman
+personal_extensions () {
+    # Install required dependencies
+    sudo dnf install -y curl wget jq
+    # Install extensions
+    cd "$current_dir"
+    ./install-gnome-extensions.sh --enable --file ./extensions.txt
+    cd ~/
+}
+
 # Function to install ohmybash
 install_ohmybash () {
     cd ~/.local/share
@@ -127,6 +137,7 @@ custom_ops=(
     "Install media codecs"
     "Install commonly used apps"
     "Install personal apps for Aiman"
+    "Install personal extensions for Aiman"
     "Install OhMyBash"
     "Remove bloatware"
     "Clean up unused packages"
@@ -140,6 +151,7 @@ custom_commands=(
     "install_media_codecs"
     "install_commonly_used_apps_gnome"
     "personal_apps"
+    "personal_extensions"
     "install_ohmybash"
     "remove_bloatware"
     "clean_up"
@@ -159,6 +171,18 @@ yad_dialogs () {
 
     # Modify commands for KDE
     if [ "$desktop_environment" == "KDE" ]; then
+        local hide_index=6
+        unset 'custom_ops[${hide_index}]'
+        unset 'custom_commands[${hide_index}]'
+        for ((i=${hide_index}; i<${#custom_ops[@]}-1; i++)); do
+            custom_ops[i]=${custom_ops[i+1]}
+        done
+        unset 'custom_ops[${#custom_ops[@]}-1]'
+        for ((i=${hide_index}; i<${#custom_commands[@]}-1; i++)); do
+            custom_commands[i]=${custom_commands[i+1]}
+        done
+        unset 'custom_commands[${#custom_commands[@]}-1]'
+
         custom_commands[4]=install_commonly_used_apps_kde
         custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
     elif [ "$desktop_environment" != "GNOME" ]; then
