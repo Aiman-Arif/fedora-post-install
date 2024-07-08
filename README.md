@@ -3,6 +3,7 @@ POST INSTALL SCRIPT FOR FEDORA 40+
 > [!NOTE]
 > - Will be updated after every major update of Fedora Workstation or KDE Spin. Support GNOME and KDE version only.
 > - Credits for some part of the script goes to https://github.com/devangshekhawat/Fedora-40-Post-Install-Guide.
+> - Credits for install-gnome-extensions script goes to https://github.com/ToasterUwU/install-gnome-extensions.
 > - Credits for GTK theme goes to https://github.com/vinceliuice/Colloid-gtk-theme.
 
 > [!IMPORTANT]
