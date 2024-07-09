@@ -2,10 +2,12 @@ https://extensions.gnome.org/extension/615/appindicator-support/
 https://extensions.gnome.org/extension/6433/app-menu-is-back/
 https://extensions.gnome.org/extension/3628/arcmenu/
 https://extensions.gnome.org/extension/1401/bluetooth-quick-connect/
+https://extensions.gnome.org/extension/3193/blur-my-shell/
 https://extensions.gnome.org/extension/4679/burn-my-windows/
 https://extensions.gnome.org/extension/517/caffeine/
 https://extensions.gnome.org/extension/779/clipboard-indicator/
 https://extensions.gnome.org/extension/307/dash-to-dock/
+https://extensions.gnome.org/extension/4133/disable-menu-switching/
 https://extensions.gnome.org/extension/4481/forge/
 https://extensions.gnome.org/extension/3843/just-perfection/
 https://extensions.gnome.org/extension/3795/notification-timeout/
