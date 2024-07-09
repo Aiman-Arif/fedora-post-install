@@ -48,8 +48,8 @@ install_dracula_theme () {
     cd ~/
     git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    sudo ./install.sh --tweaks dracula rimless float
-    ./install.sh --tweaks dracula rimless float -c dark -l
+    sudo ./install.sh --tweaks dracula rimless
+    ./install.sh --tweaks dracula rimless -c dark -l
     cd ~/
     rm -rf Colloid-gtk-theme
     gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Dark-Dracula"
@@ -69,8 +69,8 @@ install_gruvbox_theme () {
     cd ~/
     git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    sudo ./install.sh --tweaks gruvbox rimless float
-    ./install.sh --tweaks gruvbox rimless float -c dark -l
+    sudo ./install.sh --tweaks gruvbox rimless
+    ./install.sh --tweaks gruvbox rimless -c dark -l
     cd ~/
     rm -rf Colloid-gtk-theme
     gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Dark-Gruvbox"
@@ -85,8 +85,8 @@ install_catppuccin_theme () {
     cd ~/
     git clone --depth 1 https://github.com/vinceliuice/Colloid-gtk-theme.git
     cd Colloid-gtk-theme
-    sudo ./install.sh -t purple --tweaks catppuccin black rimless float
-    ./install.sh -t purple --tweaks catppuccin black rimless float -c dark -l
+    sudo ./install.sh -t purple --tweaks catppuccin black rimless
+    ./install.sh -t purple --tweaks catppuccin black rimless -c dark -l
     cd ~/
     rm -rf Colloid-gtk-theme
     gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Purple-Dark-Catppuccin"
