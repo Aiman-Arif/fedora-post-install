@@ -39,7 +39,7 @@ install_bibata_cursor () {
     sudo dnf copr enable -y peterwu/rendezvous
     sudo dnf install -y bibata-cursor-themes
     # Set themes
-    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice"
+    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
 }
 
 # Function to install Dracula themes
