@@ -65,14 +65,14 @@ install_media_codecs () {
 # Function to install commonly used applications for GNOME
 install_commonly_used_apps_gnome () {
     # Install applications via DNF and Flatpak
-    sudo dnf install -y fastfetch vlc gnome-tweaks
-    flatpak install -y one.ablaze.floorp net.nokyan.Resources io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
+    sudo dnf install -y fastfetch vlc gnome-tweaks btop
+    flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
 }
 
 # Function to install commonly used applications for KDE
 install_commonly_used_apps_kde () {
     # Install applications via DNF
-    sudo dnf install -y fastfetch vlc
+    sudo dnf install -y fastfetch vlc btop
     flatpak install -y one.ablaze.floorp
 }
 
@@ -80,13 +80,9 @@ install_commonly_used_apps_kde () {
 personal_apps () {
     # Add launcher.moe Flatpak repository and Microsoft GPG key
     flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
-    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    # Add Visual Studio Code repository
-    echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
-    dnf check-update
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
-    sudo dnf install -y unzip p7zip p7zip-plugins unrar code
+    sudo dnf install -y unzip p7zip p7zip-plugins unrar
     flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop org.telegram.desktop org.gnome.gThumb
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
@@ -120,7 +116,7 @@ install_ohmybash () {
 # Function to remove bloatware
 remove_bloatware () {
     # Remove unwanted applications
-    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app totem firefox
+    sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app totem
 }
 
 # Function to run after scripts completed
@@ -184,7 +180,7 @@ yad_dialogs () {
         unset 'custom_commands[${#custom_commands[@]}-1]'
 
         custom_commands[4]=install_commonly_used_apps_kde
-        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat firefox"
+        custom_commands[7]="sudo dnf remove -y pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat"
     elif [ "$desktop_environment" != "GNOME" ]; then
         echo "Error: Your desktop environment is not supported."
         exit 1
