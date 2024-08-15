@@ -97,20 +97,21 @@ personal_extensions () {
     cd ~/
 }
 
-# Function to install ohmybash
-install_ohmybash () {
+# Function to install starship
+install_starship () {
     cd ~/.local/share
     mkdir fonts
     cd ~/
     git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git
     cd ~/nerd-fonts
-    ./install.sh FiraCode
+    ./install.sh CaskaydiaCove
     cd ~/
     rm -rf nerd-fonts
-    # Install OhMyBash
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-    sudo dnf copr enable -y atim/zoxide
-    sudo dnf install -y zoxide
+    sudo dnf install -y fish
+    chsh -s /usr/bin/fish
+    # Install Starship
+    curl -sS https://starship.rs/install.sh | sh
+    starship preset pastel-powerline -o ~/.config/starship.toml
 }
 
 # Function to remove bloatware
@@ -134,7 +135,7 @@ custom_ops=(
     "Install commonly used apps"
     "Install personal apps for Aiman"
     "Install personal extensions for Aiman"
-    "Install OhMyBash"
+    "Install Starship"
     "Remove bloatware"
     "Clean up unused packages"
 )
@@ -148,7 +149,7 @@ custom_commands=(
     "install_commonly_used_apps_gnome"
     "personal_apps"
     "personal_extensions"
-    "install_ohmybash"
+    "install_starship"
     "remove_bloatware"
     "clean_up"
 )
