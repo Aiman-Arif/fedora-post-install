@@ -65,8 +65,8 @@ install_media_codecs () {
 # Function to install commonly used applications for GNOME
 install_commonly_used_apps_gnome () {
     # Install applications via DNF and Flatpak
-    sudo dnf install -y fastfetch vlc gnome-tweaks btop
-    flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor
+    sudo dnf install -y fastfetch gnome-tweaks btop
+    flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor com.github.rafostar.Clapper io.github.zen_browser.zen
 }
 
 # Function to install commonly used applications for KDE
@@ -83,7 +83,7 @@ personal_apps () {
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
     sudo dnf install -y unzip p7zip p7zip-plugins unrar
-    flatpak install -y com.bitwarden.desktop io.github.shiftey.Desktop org.telegram.desktop org.gnome.gThumb
+    flatpak install -y io.github.shiftey.Desktop org.telegram.desktop org.gnome.gThumb
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
@@ -95,23 +95,6 @@ personal_extensions () {
     cd "$current_dir"
     ./install-gnome-extensions.sh --enable --file ./extensions.txt
     cd ~/
-}
-
-# Function to install starship
-install_starship () {
-    cd ~/.local/share
-    mkdir fonts
-    cd ~/
-    git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git
-    cd ~/nerd-fonts
-    ./install.sh CaskaydiaCove
-    cd ~/
-    rm -rf nerd-fonts
-    sudo dnf install -y fish
-    chsh -s /usr/bin/fish
-    # Install Starship
-    curl -sS https://starship.rs/install.sh | sh
-    starship preset pastel-powerline -o ~/.config/starship.toml
 }
 
 # Function to remove bloatware
@@ -135,7 +118,6 @@ custom_ops=(
     "Install commonly used apps"
     "Install personal apps for Aiman"
     "Install personal extensions for Aiman"
-    "Install Starship"
     "Remove bloatware"
     "Clean up unused packages"
 )
@@ -149,7 +131,6 @@ custom_commands=(
     "install_commonly_used_apps_gnome"
     "personal_apps"
     "personal_extensions"
-    "install_starship"
     "remove_bloatware"
     "clean_up"
 )
@@ -181,7 +162,7 @@ yad_dialogs () {
         unset 'custom_commands[${#custom_commands[@]}-1]'
 
         custom_commands[4]=install_commonly_used_apps_kde
-        custom_commands[7]="sudo dnf remove -y firefox pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat"
+        custom_commands[6]="sudo dnf remove -y firefox pim* akonadi* akregator korganizer kolourpaint kmail kmines kmahjongg kmousetool kmouth kpat kamoso krdc krfb ktnef kaddressbook mariadb mariadb-backup mariadb-common mediawriter gnome-abrt neochat"
     elif [ "$desktop_environment" != "GNOME" ]; then
         echo "Error: Your desktop environment is not supported."
         exit 1
