@@ -29,9 +29,7 @@ check_yad() {
 imp_dnf() {
     local dnf_conf="/etc/dnf/dnf.conf"
     # Add settings to dnf.conf if they do not already exist
-    sudo grep -qxF 'fastestmirror=1' $dnf_conf || echo 'fastestmirror=1' | sudo tee -a $dnf_conf
     sudo grep -qxF 'max_parallel_downloads=10' $dnf_conf || echo 'max_parallel_downloads=10' | sudo tee -a $dnf_conf
-    sudo grep -qxF 'deltarpm=True' $dnf_conf || echo 'deltarpm=True' | sudo tee -a $dnf_conf
     sudo grep -qxF 'defaultyes=True' $dnf_conf || echo 'defaultyes=True' | sudo tee -a $dnf_conf
 }
 
@@ -39,27 +37,23 @@ imp_dnf() {
 add_rpm_fusion () {
     # Install RPM Fusion repositories
     sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    sudo dnf groupupdate -y core  # Update core group
-    sudo dnf upgrade -y --refresh  # Upgrade all packages
+    sudo dnf group update -y core  # Upgrade all packages
 }
 
 # Function to update firmware
 update_firmware () {
-    sudo fwupdmgr get-devices  # Get list of devices
     sudo fwupdmgr refresh --force  # Refresh metadata
+    sudo fwupdmgr get-devices  # Get list of devices
     sudo fwupdmgr get-updates  # Get list of updates
     sudo fwupdmgr update  # Apply updates
 }
 
 # Function to install media codecs
 install_media_codecs () {
-    # Update multimedia groups and swap ffmpeg-free with ffmpeg
-    sudo dnf groupupdate -y "core" "multimedia" "sound-and-video" --setopt="install_weak_deps=False" --exclude="PackageKit-gstreamer-plugin" --allowerasing
-    sudo dnf swap -y "ffmpeg-free" "ffmpeg" --allowerasing
-    # Install GStreamer plugins and other multimedia packages
-    sudo dnf install -y gstreamer1-plugins-{bad-*,good-*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg
-    sudo dnf install -y lame* --exclude=lame-devel
-    sudo dnf group upgrade -y --with-optional Multimedia
+    sudo dnf swap -y 'ffmpeg-free' 'ffmpeg' --allowerasing # Switch to full FFMPEG.
+    sudo dnf group install -y Multimedia sound-and-video
+    sudo dnf update -y @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin # Installs gstreamer components. Required if you use Gnome Videos and other dependent applications.
+    sudo dnf update -y @sound-and-video # Installs useful Sound and Video complement packages.
 }
 
 # Function to install commonly used applications for GNOME
@@ -72,7 +66,7 @@ install_commonly_used_apps_gnome () {
 # Function to install commonly used applications for KDE
 install_commonly_used_apps_kde () {
     # Install applications via DNF
-    sudo dnf install -y fastfetch vlc btop
+    sudo dnf install -y fastfetch btop
     flatpak install -y io.github.zen_browser.zen
 }
 
@@ -82,7 +76,6 @@ personal_apps () {
     flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
     # Install development tools and other applications
     sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
-    sudo dnf install -y unzip p7zip p7zip-plugins unrar
     flatpak install -y io.github.shiftey.Desktop org.telegram.desktop org.gnome.gThumb
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
@@ -199,13 +192,13 @@ yad_dialogs () {
         yad --error --text="No commands selected. Exiting." --width=300 --height=150
         exit 1
     fi
-    
-    
+
+
     # Check if the log file exists and remove it if it does
     if [ -f "$run_log" ]; then
         rm "$run_log"  # Remove the existing log file
     fi
-	
+
     # Execute selected commands
     for i in "${!selected_commands[@]}"; do
         local currect_commands_index=$(($i + 1))
