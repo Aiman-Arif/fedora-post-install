@@ -50,10 +50,8 @@ update_firmware () {
 
 # Function to install media codecs
 install_media_codecs () {
-    sudo dnf swap -y 'ffmpeg-free' 'ffmpeg' --allowerasing # Switch to full FFMPEG.
-    sudo dnf group install -y Multimedia sound-and-video
-    sudo dnf update -y @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin # Installs gstreamer components. Required if you use Gnome Videos and other dependent applications.
-    sudo dnf update -y @sound-and-video # Installs useful Sound and Video complement packages.
+    sudo dnf swap -y ffmpeg-free ffmpeg --allowerasing
+    sudo dnf update -y @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
 }
 
 # Function to install commonly used applications for GNOME
