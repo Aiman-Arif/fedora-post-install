@@ -37,7 +37,7 @@ imp_dnf() {
 add_rpm_fusion () {
     # Install RPM Fusion repositories
     sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    sudo dnf group update -y core  # Upgrade all packages
+    sudo dnf group upgrade -y core  # Upgrade all packages
 }
 
 # Function to update firmware
@@ -72,11 +72,11 @@ install_commonly_used_apps_kde () {
 
 # Function to install personal applications for Aiman
 personal_apps () {
+    # Install development tools and other applications
+    sudo dnf group install -y c-development development-tools
+    flatpak install -y io.github.shiftey.Desktop org.telegram.desktop org.gnome.gThumb
     # Add launcher.moe Flatpak repository and Microsoft GPG key
     flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
-    # Install development tools and other applications
-    sudo dnf group install -y "C Development Tools and Libraries" "Development Tools"
-    flatpak install -y io.github.shiftey.Desktop org.telegram.desktop org.gnome.gThumb
     flatpak install -y moe.launcher.the-honkers-railway-launcher
 }
 
@@ -94,6 +94,7 @@ personal_extensions () {
 remove_bloatware () {
     # Remove unwanted applications
     sudo dnf remove -y gnome-boxes gnome-connections gnome-contacts gnome-logs gnome-tour mediawriter gnome-abrt gnome-system-monitor gnome-extensions-app totem firefox
+    sudo dnf install -y systemd-container
 }
 
 # Function to run after scripts completed
