@@ -80,6 +80,7 @@ personal_apps () {
 
 # Function to install personal extensions for Aiman
 personal_extensions () {
+    sudo dnf remove -y gnome-shell-extension-apps-menu gnome-shell-extension-background-logo gnome-shell-extension-launch-new-instance gnome-shell-extension-places-menu gnome-shell-extension-window-list
     # Install required dependencies
     sudo dnf install -y curl wget jq
     # Install extensions
