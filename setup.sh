@@ -58,7 +58,7 @@ install_media_codecs () {
 install_commonly_used_apps_gnome () {
     # Install applications via DNF and Flatpak
     sudo dnf install -y fastfetch gnome-tweaks btop
-    flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor com.github.rafostar.Clapper io.github.zen_browser.zen
+    flatpak install -y io.github.realmazharhussain.GdmSettings com.mattjakeman.ExtensionManager ca.desrt.dconf-editor org.gnome.Showtime io.github.zen_browser.zen com.github.neithern.g4music
 }
 
 # Function to install commonly used applications for KDE
@@ -72,7 +72,7 @@ install_commonly_used_apps_kde () {
 personal_apps () {
     # Install development tools and other applications
     sudo dnf group install -y c-development development-tools
-    flatpak install -y io.github.shiftey.Desktop org.telegram.desktop org.gnome.gThumb
+    flatpak install -y io.github.shiftey.Desktop org.telegram.desktop
     # Add launcher.moe Flatpak repository and Microsoft GPG key
     flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
     flatpak install -y moe.launcher.the-honkers-railway-launcher
