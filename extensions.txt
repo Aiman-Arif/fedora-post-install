@@ -4,13 +4,11 @@ https://extensions.gnome.org/extension/1401/bluetooth-quick-connect/
 https://extensions.gnome.org/extension/3193/blur-my-shell/
 https://extensions.gnome.org/extension/517/caffeine/
 https://extensions.gnome.org/extension/779/clipboard-indicator/
-https://extensions.gnome.org/extension/3396/color-picker/
 https://extensions.gnome.org/extension/307/dash-to-dock/
 https://extensions.gnome.org/extension/3843/just-perfection/
-https://extensions.gnome.org/extension/4470/media-controls/
 https://extensions.gnome.org/extension/3795/notification-timeout/
 https://extensions.gnome.org/extension/6099/paperwm/
+https://extensions.gnome.org/extension/5940/quick-settings-audio-panel/
 https://extensions.gnome.org/extension/5040/start-overlay-in-application-view/
-https://extensions.gnome.org/extension/19/user-themes/
 https://extensions.gnome.org/extension/5470/weather-oclock/
 https://extensions.gnome.org/extension/6310/window-title-is-back/
